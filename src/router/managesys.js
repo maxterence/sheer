@@ -11,7 +11,8 @@ let routes=[
         component:mnglogin,
         name:'managelogin'
       },
-    {    path:'/managesys',
+    {    
+        path:'/managesys',
         component:managesys,
         beforeEnter: (to, from, next) => {
             if(store.state.mnguserinfo !=''){
@@ -19,7 +20,6 @@ let routes=[
             }else{
                 next({path:'/managelogin'});
             }
-        
         },
         meta:{
             requireAuth: true,

@@ -1,6 +1,7 @@
 <template>
   <el-header style="height:61px;padding:0 10px;margin:0">
     <img src="../assets/images/logo.png" alt="SHEER" class="headerlogo" />
+    
     <div class="topmenu">
       <!-- 搜索 -->
       <el-input
@@ -8,7 +9,7 @@
         prefix-icon="el-icon-search"
         v-model="searchkeywords"
         clearable
-        style="width:200px;margin-top:10px"
+        style="width:200px;"
       ></el-input>
       <el-button icon="el-icon-search" @click="handlesearch" circle style="margin-right:50px;"></el-button>
 
@@ -64,16 +65,24 @@
         router
         style="float:right"
       >
-        <el-menu-item index="1" :route="{path: '/'}"><i class="el-icon-s-home"></i> 发现</el-menu-item>
+        <el-menu-item index="1" :route="{path: '/'}">
+          <i class="el-icon-s-home"></i> 发现
+        </el-menu-item>
         <el-menu-item index="2" :route="{path: '/about'}">关于</el-menu-item>
         <el-submenu index="3">
-          <template slot="title" to="/icenter">
-            <span style="margin-right:5px">{{user.name}}</span>
-            <el-avatar :src="imgsrc" fit="fill" style="margin-left:8px;"></el-avatar>
+          <template slot="title">
+            <span style="margin-right:5px" @click="()=>{$router.push('/i')}">{{$store.getters.userstate}}</span>
+            <el-avatar :src="user.imgsrc" fit="fill" style="margin-left:8px;"></el-avatar>
           </template>
-          <el-menu-item index="3-1" :route="{path:'/i'}"><i class="el-icon-user"></i> 个人中心</el-menu-item>
-          <el-menu-item index="3-2" :route="{path:'/setting'}"><i class="el-icon-setting"></i> 个人设置</el-menu-item>
-          <el-menu-item index="3-3"><i class="el-icon-switch-button"></i> 退出</el-menu-item>
+          <el-menu-item index="3-1" :route="{path:'/i'}">
+            <i class="el-icon-user"></i> 个人中心
+          </el-menu-item>
+          <el-menu-item index="3-2" :route="{path:'/setting'}">
+            <i class="el-icon-setting"></i> 个人设置
+          </el-menu-item>
+          <el-menu-item  @click="handleexit">
+            <i class="el-icon-switch-button"></i> 退出
+          </el-menu-item>
         </el-submenu>
       </el-menu>
     </div>
@@ -85,7 +94,6 @@ export default {
   data() {
     return {
       drawer: false,
-      imgsrc: require("@/assets/images/reyi.jpg"),
       writedialogform: false,
 
       userupdate: {
@@ -94,15 +102,31 @@ export default {
         fileList: [{ filename: "", url: "" }]
       },
       user: {
-        name: "reyi"
+        name: "",
+        //imgsrc: "",
+        // name: "reyi",
+        imgsrc: require("@/assets/images/reyi.jpg")
       },
 
       searchkeywords: ""
     };
   },
+  computed: {
+    username() {
+      return this.$store.getters.userstate;
+    }
+  },
+  created:function() {
+     var a =localStorage.getItem("userinfo");
+    if (a =="" || a.isEmpty()) {
+      this.user.name = "login";
+    } else {
+      this.user.name = localStorage.getItem("userinfo");
+      //this.user.imgsrc=localStorage.getItem("avatarsrc") ;
+    }
+  },
   methods: {
     handleClose() {},
-    mounted() {},
     handlepostupdate() {
       // console.log(this.userupdate);
       this.writedialogform = false;
@@ -117,13 +141,20 @@ export default {
     handlePreview() {
       //console.log(file);
     },
-    handleLogin() {}
+    handleexit() {
+      alert("log out!");
+      localStorage.removeItem("userinfo");
+      this.$store.commit("userinfo");
+      setTimeout(() => {
+        this.$router.push('/');
+      }, 1000);
+    }
   }
 };
 </script>
 
 
-<style>
+<style scoped>
 .headerlogo {
   object-fit: contain;
   float: left;

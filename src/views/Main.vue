@@ -18,6 +18,12 @@ export default {
 components: {
     Header
   },
+created(){
+    var logininfo = localStorage.getItem("userinfo");
+    if(logininfo != ''){
+       this.$store.commit("userlogin",logininfo);
+    }
+  }
 }
 </script>
 

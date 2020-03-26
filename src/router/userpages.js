@@ -34,11 +34,26 @@ let routes=[
               {
                 path:'/i',
                 component:() => import('../views/icenter.vue'),
-
+                beforeEnter: (to, from, next) => {
+                  var a =localStorage.getItem("userinfo"); 
+                  if(a){
+                      next();
+                  }else{
+                      next({path:'/login'});
+                  }
+              },
               },
               {
                 path:'/setting',
                 component:setting,
+                beforeEnter: (to, from, next) => {
+                  var a =localStorage.getItem("userinfo"); 
+                  if(a){
+                      next();
+                  }else{
+                      next({path:'/login'});
+                  }
+              },
                 children:[
                   {
                     path:'',    //默认

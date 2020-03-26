@@ -1,58 +1,53 @@
 <template>
-<el-container>
-  <div>
-    <el-aside style="width:200px">
-<el-row class="tac" >
-  <el-col :span="12">
-    <h5>后台管理</h5>
-    <el-menu
-      default-active="1"
-      class="el-menu-vertical-demo"
-      @open="handleOpen"
-      @close="handleClose">
-      <el-menu-item index="1">
-        <i class="el-icon-menu"></i>
-        <span slot="title">导航一</span>
-      </el-menu-item>
-
-      <el-submenu index="2">
-        <template slot="title">
-          <i class="el-icon-location"></i>
-          <span>导航二</span>
-        </template>
-        <el-menu-item-group>
+  <el-container style="height: auto;">
+    <el-aside width="200px" style="">
+      <h1>sheer bcm</h1>
+      <el-menu :default-openeds="['1', '3']" router>
+        <el-menu-item-group title="数据">
           
-          <el-menu-item index="2-1">选项1</el-menu-item>
-          <el-menu-item index="2-2">选项2</el-menu-item>
+          <el-menu-item index="/managesys/showdetail" >查看</el-menu-item>
         </el-menu-item-group>
-
-       
-      </el-submenu>
-
-    </el-menu>
-  </el-col>
-</el-row>
+        <el-menu-item-group title="管理">
+          <el-menu-item index="/managesys/postmanage">帖子管理</el-menu-item>
+          <el-menu-item index="/managesys/usermanage">用户管理</el-menu-item>
+        </el-menu-item-group>
+      </el-menu>
     </el-aside>
-<el-main>
-      <transition name="el-fade-in">
-        <router-view/>
-      </transition>
-</el-main>
-  </div>
-</el-container>
+
+    <el-container>
+      <el-header style="margin:0 15px; font-size: 12px ;text-align:right;">
+        <span style="font-size:40px">管理系统</span>
+          
+      </el-header>
+      <div style="padding:15px;margin-top:45px">
+        <transition name="el-fade-in">
+          <router-view />
+        </transition>
+      </div>
+      <!-- <el-main style="padding:0"> -->
+      <!-- </el-main> -->
+    </el-container>
+  </el-container>
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
 
 <style>
-.tac{
-  width:100%
+.el-header {
+  background-color: #ffffffe7;
+  color: #333;
+  line-height: 60px;
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  width: 88vw;
 }
-  
 
+.el-aside {
+  color: #333;
+  /* background-color:  rgba(50, 107, 206, 0.342); */
+}
 
 </style>

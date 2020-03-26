@@ -2,12 +2,7 @@
   <el-main>
     <el-row>
       <el-col :span="24">
-        <el-carousel
-          :interval="4500"
-          type="card"
-          height="400px"
-          style="z-index:1;position:relative;width:100%; "
-        >
+        <el-carousel :interval="4500" type="card" height="400px">
           <el-carousel-item v-for="item in 6" :key="item">
             <h3 class="medium">{{ item }}</h3>
           </el-carousel-item>
@@ -18,12 +13,9 @@
       <el-col :span="20" :offset="2">
         <div class="main">
           <div class="showstream">
-            <ActCard></ActCard>
-            <ActCard></ActCard>
-            <ActCard></ActCard>
-            <ActCard></ActCard>
-            <ActCard></ActCard>
-            <ActCard></ActCard>
+            
+            <ActCard :card="card" v-for="(card, index) in cardlist" :key="index"></ActCard>
+ 
           </div>
         </div>
       </el-col>
@@ -34,26 +26,55 @@
 <script>
 // @ is an alias to /src
 
-// import Header from "@/components/Header.vue";
+
 import ActCard from "@/components/ActCard";
 
 export default {
   name: "home",
   components: {
-    // Header,
+    
     ActCard
-  }
+  },
+  data() {
+    return {
+      cardlist:[
+        {
+        card_username: "刘人语",
+        card_avatarsrc: require("../assets/images/user.jpg"),
+        card_describe: "刘人语小朋友爸爸也爱你",
+
+        card_imgsrc:
+          "https://wx2.sinaimg.cn/mw690/b4917656gy1g7umi7pu4pj21jk1jku10.jpg",
+        comment_list: [
+          { cmtusername: "t", cmt: "pickpickpick" },
+          { cmtusername: "bbbbb", cmt: "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiii" }
+        ]
+      },
+      {
+        card_username: "刘人语666666",
+        card_avatarsrc: require("../assets/images/user.jpg"),
+        card_describe: "刘人语小朋友爸爸也爱你asdfasdfasdfadsfadsf",
+
+        card_imgsrc:
+          "https://wx2.sinaimg.cn/mw690/b4917656gy1g7umi7pu4pj21jk1jku10.jpg",
+        comment_list: [
+          { cmtusername: "t", cmt: "pickpickpick" },
+          { cmtusername: "bbbbb", cmt: "iiiiii66666666666666666666666666i" }
+        ]
+      },
+      ]
+    }
+  },
 };
 </script>
 
-<style>
+<style scoped>
 .main {
-  left: 50;
+  
   margin: 0 auto;
 }
 .showstream {
-  left: -50;
-
+ 
   display: inline-block;
   margin: 0 auto;
   width: auto;
