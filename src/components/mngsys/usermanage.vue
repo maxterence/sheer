@@ -10,6 +10,12 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+  :page-size="20"
+  :pager-count="11"
+  layout="prev, pager, next"
+  :total="1000">
+</el-pagination>
   </div>
 </template>
 
@@ -23,7 +29,7 @@ data() {
       active:false,
     };
     return {
-      tableData: Array(20).fill(item)
+      tableData: Array(10).fill(item)
     };
   }
 }

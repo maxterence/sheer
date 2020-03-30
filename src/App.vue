@@ -3,6 +3,8 @@
     <transition name="el-fade-in-linear">
       <router-view />
     </transition>
+        
+          <el-backtop target="#app"></el-backtop>
   </div>
 </template>
 

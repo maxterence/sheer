@@ -7,6 +7,7 @@
           <router-view />
         </transition>
       </div>
+
     </el-container>
 </div>
 </template>
@@ -28,5 +29,7 @@ created(){
 </script>
 
 <style>
-
+#app{
+  
+}
 </style>

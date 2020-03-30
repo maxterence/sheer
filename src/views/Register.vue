@@ -30,7 +30,7 @@
             <el-form-item label="个性签名">
               <el-input type="textarea" v-model="newuser.motto" style="width: 80%;"></el-input>
             </el-form-item>
-            <el-form-item label="生日">
+            <!-- <el-form-item label="生日">
               <el-col :span="11">
                 <el-date-picker
                   type="date"
@@ -39,11 +39,13 @@
                   style="width: 100%;"
                 ></el-date-picker>
               </el-col>
+            </el-form-item> -->
+            <el-form-item label="电话" style="width:70%">
+              <el-input v-model="newuser.phone" placeholder="昵称"></el-input>
             </el-form-item>
-
             <el-form-item>
-              <el-button type="primary" @click="onSubmit">保存</el-button>
-              <el-button>取消</el-button>
+              <el-button type="primary" @click="onSubmit">注册</el-button>
+              <el-button @click="()=>{$router.push('/home')}">取消</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -75,13 +77,15 @@ export default {
       }
     };
     return {
+      msg:'',
+      userid:'',
       newuser: {
         username: '',
         password: '',
         cpassword: '',
         sex: '',
-        birthday: '',
         motto:'',
+        phone:'',
       },
       rules: {
         password: [{ validator: validatePass, trigger: "blur" }],
@@ -94,7 +98,31 @@ export default {
       this.$refs[formName].resetFields();
     },
     onsubmit(){
-      alert("ok");
+      var checksuccess = false;
+      if(checksuccess)
+      {
+        this.$alert('注册成功！', 'Sheer', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.$message({
+              type: 'info',
+              message: `action: ${ action }`
+            });
+          }
+        });
+        this.$router.push('/home');
+        }else{
+          this.$alert('注册失败', 'Sorry', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.$message({
+              type: 'info',
+              message: `action: ${ action }`
+            });
+          }
+        });
+        this.$router.push('/register');
+        }
     }
   }
 };

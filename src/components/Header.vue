@@ -103,9 +103,9 @@ export default {
       },
       user: {
         name: "",
-        //imgsrc: "",
+        imgsrc: "",
         // name: "reyi",
-        imgsrc: require("@/assets/images/reyi.jpg")
+        // imgsrc: require("@/assets/images/reyi.jpg")
       },
 
       searchkeywords: ""
@@ -119,7 +119,8 @@ export default {
   created:function() {
      var a =localStorage.getItem("userinfo");
     if (a =="" || a.isEmpty()) {
-      this.user.name = "login";
+      this.user.imgsrc="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";
+      
     } else {
       this.user.name = localStorage.getItem("userinfo");
       //this.user.imgsrc=localStorage.getItem("avatarsrc") ;
@@ -146,7 +147,7 @@ export default {
       localStorage.removeItem("userinfo");
       this.$store.commit("userinfo");
       setTimeout(() => {
-        this.$router.push('/');
+        this.$router.go(0)
       }, 1000);
     }
   }

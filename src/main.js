@@ -6,10 +6,16 @@ import ElementUI from 'element-ui'
 //import 'element-ui/lib/theme-chalk/index.css'
 import '../src/assets/style/theme/index.css';
 import 'element-ui/lib/theme-chalk/base.css';
+import axios from 'axios';
 
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
+
+
+Vue.prototype.$axios = axios
+// axios.defaults.baseURL = '/api'  //关键代码
+Vue.config.productionTip = false
 
 new Vue({
   router,

@@ -7,7 +7,7 @@
       <el-col class="login_right" :span="6" :offset="3">
         <div class="loginform">
           <h2 >SHEER</h2>
-          <el-input v-model="username" placeholder="用户名" style="margin-bottom:10px" ></el-input>
+          <el-input v-model="userid" placeholder="用户名" style="margin-bottom:10px" ></el-input>
           <el-input v-model="userpass" placeholder="密码" show-password style="margin-bottom:10px"></el-input>
           <el-button round @click="toregister">注册</el-button>
           <el-button type="primary" round @click="handlelogin">登录</el-button>
@@ -18,10 +18,11 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
-      username: "",
+      userid: "",
       userpass: ""
     };
   },
@@ -30,26 +31,35 @@ export default {
       this.$router.push({path:'/register'});
     },
     handlelogin(){
-        
+        let id=this.userid;
+        axios.get("/userTable",{
+          params:{
+            "userId":id,
+          }
+          }).then(res=>{window.console.log(res.data)}).catch(error=>{alert(error)})
       //ajax登录请求
 
       //验证
-      var checklogin = false;
-      if(this.username!='' &&  this.userpass!='' )
-      {checklogin=true}else{checklogin=false}
+      // var checklogin = false;
+      // if(this.username!='' &&  this.userpass!='' )
+      // {
+      //   checklogin=true
+      //   }else{
+      //     checklogin=false
+      //     }
       
-        //right
-      if(checklogin==true){
-        localStorage.setItem("userinfo",this.username) ;
-        this.$store.commit("userlogin",this.username);
-        this.$router.push({path:'/'});
-      }else{
-        //wrong
-          alert("错误!!!")
-        setTimeout(() => {
-          this.$router.push('/login');
-        }, 2000);
-      }
+      //   //right
+      // if(checklogin==true){
+      //   localStorage.setItem("userinfo",this.username) ;
+      //   this.$store.commit("userlogin",this.username);
+      //   this.$router.push({path:'/'});
+      // }else{
+      //   //wrong
+      //     alert("错误!!!")
+      //   setTimeout(() => {
+      //     this.$router.push('/login');
+      //   }, 2000);
+      // }
     }
   }
 };

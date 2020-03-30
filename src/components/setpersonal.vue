@@ -30,7 +30,7 @@
             <el-option label="女" value="female"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="生日">
+        <!-- <el-form-item label="生日">
           <el-col :span="11">
             <el-date-picker
               type="date"
@@ -39,7 +39,7 @@
               style="width: 80%;"
             ></el-date-picker>
           </el-col>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label="个性签名">
           <el-input type="textarea" v-model="form.c_motto" style="width: 80%;"></el-input>
@@ -62,7 +62,8 @@ export default {
       form: {
         c_username: "",
         c_sex: "",
-        c_birthday: "",
+        c_phone:'',
+        // c_birthday: "",
         c_motto: ""
       }
     };
