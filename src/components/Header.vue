@@ -122,7 +122,7 @@ export default {
       this.user.imgsrc="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";
       
     } else {
-      this.user.name = localStorage.getItem("userinfo");
+      this.user.name = localStorage.getItem("userinfo.userName");
       //this.user.imgsrc=localStorage.getItem("avatarsrc") ;
     }
   },
@@ -147,7 +147,8 @@ export default {
       localStorage.removeItem("userinfo");
       this.$store.commit("userinfo");
       setTimeout(() => {
-        this.$router.go(0)
+         this.$router.go(0)
+        // this.$router.push('/home');
       }, 1000);
     }
   }

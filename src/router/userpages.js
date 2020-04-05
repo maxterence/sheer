@@ -15,6 +15,11 @@ let routes=[
                 component: Home
               },
               {
+                path:'/home',
+                redirect:{name:'home'},
+                alias:'/main'
+              },
+              {
                 path: '/about',
                 name: 'about',
                 // route level code-splitting

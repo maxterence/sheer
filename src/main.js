@@ -7,13 +7,15 @@ import ElementUI from 'element-ui'
 import '../src/assets/style/theme/index.css';
 import 'element-ui/lib/theme-chalk/base.css';
 import axios from 'axios';
-
+import http from './http.js';
+import qs from 'qs';
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 
-
-Vue.prototype.$axios = axios
+Vue.prototype.$http = http;
+Vue.prototype.$axios = axios;
+Vue.prototype.qs=qs;
 // axios.defaults.baseURL = '/api'  //关键代码
 Vue.config.productionTip = false
 
