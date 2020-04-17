@@ -3,6 +3,7 @@ import setting from '../views/setting.vue'
 import main from '../views/Main.vue'
 
 
+
 let routes=[
     {
         path:'/',
@@ -20,12 +21,14 @@ let routes=[
                 alias:'/main'
               },
               {
+                path:'/search/:searchkeywords',
+                component:()=>import('../views/search.vue'),
+              },
+              {
                 path: '/about',
                 name: 'about',
-                // route level code-splitting
-                // this generates a separate chunk (about.[hash].js) for this route
-                // which is lazy-loaded when the route is visited.
-                component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+               
+                component: () => import( '../views/About.vue')
               },
               {
                 path:'/login',
@@ -40,7 +43,7 @@ let routes=[
                 path:'/i',
                 component:() => import('../views/icenter.vue'),
                 beforeEnter: (to, from, next) => {
-                  var a =localStorage.getItem("userinfo"); 
+                  var a =localStorage.getItem("userinfoname"); 
                   if(a){
                       next();
                   }else{
@@ -52,13 +55,13 @@ let routes=[
                 path:'/setting',
                 component:setting,
                 beforeEnter: (to, from, next) => {
-                  var a =localStorage.getItem("userinfo"); 
+                  var a =localStorage.getItem("userinfoname"); 
                   if(a){
                       next();
                   }else{
                       next({path:'/login'});
                   }
-              },
+                },
                 children:[
                   {
                     path:'',    //默认

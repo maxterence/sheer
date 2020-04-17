@@ -2,15 +2,21 @@
   <div class="Login">
     <el-row style="height:100%">
       <el-col class="login_left" :span="6" :offset="3">
-        <img src="../assets/images/reyi.jpg" alt="SHEER" class="login_logoimg" />
+        <img src="../assets/images/logo2ba.png" alt="SHEER" class="login_logoimg" />
       </el-col>
-      <el-col class="login_right" :span="6" :offset="3">
+      <el-col class="login_right" :span="6" :offset="5">
         <div class="loginform">
-          <h2>SHEER</h2>
-          <el-input v-model="userid" placeholder="用户名" style="margin-bottom:10px"></el-input>
-          <el-input v-model="userpass" placeholder="密码" show-password style="margin-bottom:10px"></el-input>
-          <el-button round @click="toregister">注册</el-button>
-          <el-button type="primary" round @click="handlelogin">登录</el-button>
+          <h2>登录</h2>
+          <el-form>
+            <el-form-item>
+              <el-input clearable v-model="userid" placeholder="用户名"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-input clearable v-model="userpass" placeholder="密码" show-password></el-input>
+            </el-form-item>
+            <el-button round @click="toregister">注册</el-button>
+            <el-button type="primary" round @click="handlelogin">登录</el-button>
+          </el-form>
         </div>
       </el-col>
     </el-row>
@@ -25,79 +31,85 @@ export default {
     return {
       userid: "",
       userpass: "",
-      userdata:{},
+      userdata: {}
     };
   },
   methods: {
     toregister() {
-      this.$router.push({ path: "/register" }).catch(err=>{alert(err)});
+      this.$router.push({ path: "/register" }).catch(err => {
+        alert(err);
+      });
     },
     handlelogin() {
-
       let loginid = this.userid;
       let loginps = this.userpass;
       let checklogin = false;
-      //  var userdata = {};
-      // let cuserpass = "";
-      
-      // // 登录验证
-      // if (loginid == "" || loginps == "") {
-      //   checklogin = false;
-      //   alert("账号密码不得为空!!");
-      // } else {
-        //ajax登录请求
-        // axios
-        //   .get("/userTable", {
-        //     params: {
-        //       userId: loginid
-        //     }
-        //   })
-        //   .then(res => {
-        //     userdata = res.data.data.records[0];
-        //      window.console.log(userdata);
-             
-        //   })
-        //   .catch(error => {
-        //     alert(error); //错误
-        //   });
 
-       this.$http.get("userTable",{
-        userId:loginid 
-        }).then(res=>{
-          var userdata = res;
-      var password=userdata.data.records[0].userPassword;
-window.console.log(userdata);
-window.console.log(password);
-        if (userdata == null) {
-          alert("用户未注册!!");
-          window.console.log(password);
-          checklogin = false;
-        } else if ( password != loginps) {
-         
-     
-          window.console.log(loginps);
-          alert("用户名或密码错误");
-          checklogin = false;
-        } else if (loginps == password) {
-          checklogin = true;
-        }
-      //right
-      if (checklogin == true) {
-        localStorage.setItem("userinfo", userdata.data.records[0]);
-        this.$store.commit("userlogin", userdata.data.records[0].userName);
-        setTimeout(() => {
-          this.$router.push({ path: "/" });
-        }, 500);
+      // 登录验证
+      if (loginid == "" || loginps == "") {
+        checklogin = false;
+        this.$message("用户名或密码不得为空");
       } else {
-        //wrong
-        
-        setTimeout(() => {
-          this.$router.push("/login");
-        }, 1000);
-      }
-        }).then();
+        //ajax登录请求
+        this.$axios
+          .get(
+            "/userTable",
+            {
+              params: {
+                userId: loginid
+              }
+            },
+            { "emulateJSON": "true", "Content-Type": "application/json" }
+          )
+          .then(res => {
+            var userdata = res.data;
+            var password = userdata.data.records[0].userPassword;
+            var userinfo = res.data.data.records[0];
+            window.console.log(userdata.data);
+            window.console.log(userinfo);
+            if (userdata == null) {
+              //返回为空提示用户未注册
+              checklogin = false;
+              this.$alert("用户未注册", "登录失败", {
+                confirmButtonText: "确定"
+              });
+              window.console.log(password);
+            } else if (password != loginps) {
+              //用户密码错误
+              checklogin = false;
+              this.$message("用户名过密码错误");
+              window.console.log(loginps);
 
-      // }
+              checklogin = false;
+            } else if (loginps == password) {
+              // 登录成功
+              checklogin = true;
+            }
+            //right
+            if (checklogin == true) {
+              localStorage.setItem("userinfoid", userinfo.userId);
+              localStorage.setItem("userinfoname", userinfo.userName);
+              localStorage.setItem("userinfosex", userinfo.userSex);
+              localStorage.setItem("userinfostatus", userinfo.userStatus);
+              localStorage.setItem("userinfophone", userinfo.userPhone);
+              localStorage.setItem("userinfomatto", userinfo.userMatto);
+              this.$store.commit(
+                "userlogin",
+                userdata.data.records[0].userName
+              );
+              this.$message("登录成功");
+              setTimeout(() => {
+                this.$router.push({ path: "/" });
+              }, 500);
+            } else {
+              //登录失败
+              this.$message("登录失败");
+            }
+          })
+          .catch(error => {
+            alert(error); //错误
+          });
+      }
 
     }
   }
@@ -108,21 +120,21 @@ window.console.log(password);
 .login_left {
   padding: 0;
   text-align: center;
-  height: 100vh;
+  height: 93vh;
 }
 .login_right {
   padding: 0;
   text-align: center;
-  height: 100vh;
+  height: 93vh;
 }
 .login_logoimg {
-  margin-top: 35vh;
+  margin-top: 22vh;
 }
 .loginform {
   background-color: rgba(255, 255, 255, 0.411);
   border-radius: 30px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
-  padding: 8vh 3vh 10vh 3vh;
+  padding: 20px;
   width: 100%;
 }
 /* .loginform input{
@@ -130,15 +142,42 @@ window.console.log(password);
   /* width: 340px; */
 /*} */
 .loginform h2 {
-  margin-bottom: 50px;
-  font-size: 44px;
+  margin-bottom: 30px;
+  font-size: 34px;
 }
 .loginform button {
   margin: 0 30px 10px 30px;
-  width: 50%;
+  width: 30%;
 }
 .Login {
   display: inline-block;
   width: 100%;
+  height: 93vh;
+  /* background: rgb(163, 119, 223);
+  background: -moz-linear-gradient(
+    270deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  );
+  background: -webkit-linear-gradient(
+    270deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  );
+  background: -o-linear-gradient(
+    270deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  );
+  background: -ms-linear-gradient(
+    270deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  );
+  background: linear-gradient(
+    0deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  ); */
 }
 </style>

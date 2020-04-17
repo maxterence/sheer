@@ -20,12 +20,12 @@
               :fit="fit"
             ></el-image>
             <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="评论数">
+              <!-- <el-form-item label="评论数">
                 <span class>{{ props.row.commentnum }}</span>
               </el-form-item>
               <el-form-item label="点赞数">
                 <span>{{ props.row.likenum }}</span>
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="内容">
                 <span
                   style="width:300px;word-break:break-all;white-space:normal;"

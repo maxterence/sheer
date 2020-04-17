@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row>
-      <el-col :span="8" :offset="8">
+      <el-col :span="10" :offset="6">
         <div class="register">
           <h1 style="text-align:center">注册</h1>
           <el-form
@@ -13,8 +13,8 @@
             class="demo-ruleForm"
           >
             <div style="margin:20px 0 30px 60px;">
-              <img style="width:60px;margin-right:20px" :src="newuser.imgsrc" />
-              <button primary @click.prevent="selectavatar=true">更改头像</button>
+              <button style="margin-left:40px" primary @click.prevent="selectavatar=true">更改头像</button>
+              <img style="width:60px;margin-left:60px" :src="newuser.imgsrc" />
             </div>
             <el-dialog top="200px" title="选择头像" :visible.sync="selectavatar" style="height:600px">
               <ul style="list-style:none;" class="avaimgs">
@@ -38,7 +38,7 @@
                 </li>
               </ul>
             </el-dialog>
-            <el-form-item label="手机号/ID" style="width:70%" prop="userid">
+            <el-form-item label="登录名" style="width:70%" prop="userid">
               <el-input v-model="newuser.userid" placeholder="手机号即登录ID"></el-input>
             </el-form-item>
             <el-form-item label="昵称" style="width:70%">
@@ -51,30 +51,19 @@
               <el-input type="password" v-model="newuser.cpassword" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="性别" style="width:70%">
-              <el-radio v-model="newuser.sex" label="1">男</el-radio>
-             <el-radio v-model="newuser.sex" label="0">女</el-radio>
-              <!-- <el-select v-model="newuser.sex" placeholder="请选择性别">
-                <el-option label="男" value="1"></el-option>
-                <el-option label="女" value="0"></el-option>
-              </el-select> -->
+              <el-radio v-model="newuser.sex" label="男">男</el-radio>
+              <el-radio v-model="newuser.sex" label="女">女</el-radio>
+            </el-form-item>
+            <el-form-item label="电话" style="width:70%">
+              <el-input v-model="newuser.phone" placeholder="电话"></el-input>
             </el-form-item>
             <el-form-item label="个性签名">
               <el-input type="textarea" v-model="newuser.matto" style="width: 80%;"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="生日">
-              <el-col :span="11">
-                <el-date-picker
-                  type="date"
-                  placeholder="选择日期"
-                  v-model="newuser.birthday"
-                  style="width: 100%;"
-                ></el-date-picker>
-              </el-col>
-            </el-form-item>-->
             <el-form-item>
               <el-button type="primary" @click="onSubmit">注册</el-button>
               <el-button plain type="danger" @click="()=>{$router.push('/')}">返回</el-button>
-              <el-button  plain @click="resetForm('newuser')" style="margin-left:80px">重置</el-button>
+              <el-button plain @click="resetForm('newuser')" style="margin-left:80px">重置</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -116,7 +105,7 @@ export default {
         cpassword: "",
         sex: "",
         matto: "",
-        phone: ""
+        phone: "",
       },
       rules: {
         password: [{ validator: validatePass, trigger: "blur" }],
@@ -136,102 +125,56 @@ export default {
 
     onSubmit() {
       var checksuccess = false;
-      let that = this
+      let that = this;
       var userId = that.newuser.userid;
       var userName = that.newuser.username;
       var userPassword = that.newuser.password;
       var userSex = that.newuser.sex;
-      var userPhone =that.newuser.userid;
+      var userPhone = that.newuser.phone;
       var userMatto = that.newuser.matto;
       var userStatus = 1;
 
-
       var newuserdata = {
-         "userId": userId,
-          "userName":userName,
-          "userPassword":userPassword,
-         "userStatus": userStatus ,
-          "userPhone": userPhone ,
-          "userSex":userSex,
-          "userMatto": userMatto ,
+        userId: userId,
+        userName: userName,
+        userPassword: userPassword,
+        userStatus: userStatus,
+        userPhone: userPhone,
+        userSex: userSex,
+        userMatto: userMatto
       };
 
-      
-  
-      // that.$http
-      //   .post("userTable",newuserdata)
-      //   .then(res => {
-      //     window.console.log(res.data.msg);
-      //     if(res.data.msg=="执行成功"){ checksuccess = true }
-      //           if (checksuccess) {
-      //             that.$alert("注册成功！请输入账号密码登录", "Sheer", {
-      //               confirmButtonText: "确定",
-      //               callback: action => {
-      //                 that.$message({
-      //                   type: "info",
-      //                   message: `action: ${action}`
-      //                 });
-      //               }
-      //             });
-      //             that.$router.push("/login");
-      //           } else {
-      //             that.$alert("注册失败，请重新输入注册信息", "Sorry", {
-      //               confirmButtonText: "确定",
-      //               callback: action => {
-      //                 that.$message({
-      //                   type: "info",
-      //                   message: `action: ${action}`
-      //                 });
-      //               }
-      //             });
-      //             this.$router.push("/login");
-      //           }
 
-      //   }).catch(res=>{
-      //     window.console.log(res.data);
-      //   });
+      that.$axios
+        .post("userTable", newuserdata, {
+          header: {
+            emulateJSON: "true",
+            "Content-Type": "application/json"
+          }
+        }).then(res => {
+          window.console.log(res);
+          if (res.data.msg == "执行成功") {
+            checksuccess = true;
+            // 注册成功，标记位成功
+          }
+          if (checksuccess) {
+            //注册成功的操作
+            that.$alert("注册成功！请输入账号密码登录", "Sheer", {
+              confirmButtonText: "确定",
+            });
+            that.$router.push("/login");
+          } else {
+            // 注册失败的操作
+            that.$alert("注册失败，请重新输入注册信息", "Sorry", {
+              confirmButtonText: "确定",
 
-
-
-
-    that.$axios.post("userTable",newuserdata,{
-      header:{
-        "emulateJSON":"true",
-        "Content-Type":"application/json"
-      }
-    }).then(res=>{
-      window.console.log(res);
-  if(res.data.msg=="执行成功"){ checksuccess = true }
-                if (checksuccess) {
-                  that.$alert("注册成功！请输入账号密码登录", "Sheer", {
-                    confirmButtonText: "确定",
-                    callback: action => {
-                      that.$message({
-                        type: "info",
-                        message: `action: ${action}`
-                      });
-                    }
-                  });
-                  that.$router.push("/login");
-                } else {
-                  that.$alert("注册失败，请重新输入注册信息", "Sorry", {
-                    confirmButtonText: "确定",
-                    callback: action => {
-                      that.$message({
-                        type: "info",
-                        message: `action: ${action}`
-                      });
-                    }
-                  });
-                 that.resetForm("newuser");
-                }
-
-
-
-    }).catch(res=>{
-      window.console.log(res)
-    })
-
+            });
+            that.resetForm("newuser");
+          }
+        })
+        .catch(res => {
+          window.console.log(res);
+        });
     }
   }
 };
@@ -241,8 +184,7 @@ export default {
 .register {
   width: 100%;
   margin-top: 80px;
-  padding: 60px 40px;
-
+  padding: 40px 60px  40px;
   background-color: white;
 }
 .register input {
@@ -260,5 +202,34 @@ export default {
 .avaimgs li :hover {
   cursor: pointer;
   background-color: rgb(209, 209, 209);
+}
+
+body{
+    background: rgb(163, 119, 223);
+  background: -moz-linear-gradient(
+    270deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  );
+  background: -webkit-linear-gradient(
+    270deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  );
+  background: -o-linear-gradient(
+    270deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  );
+  background: -ms-linear-gradient(
+    270deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  );
+  background: linear-gradient(
+    0deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  );
 }
 </style>

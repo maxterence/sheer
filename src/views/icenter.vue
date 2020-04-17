@@ -5,11 +5,15 @@
         <div class="icenter_left">
           <el-avatar :size="80" :src="user.user_avatar"></el-avatar>
           <el-divider content-position="center">
-            <span style="font-weight:700">{{user.user_username}}</span>
+            <span style="font-weight:700">{{User.userUsername}}</span>
           </el-divider>
           <div>
-            <p>用户ID：{{user.user_id}}</p>
-            <p>状态：{{user.user_status}}</p>
+            <p>用户ID：{{User.userId}}</p>
+            <p>用户名：{{User.userName}}</p>
+            <p>性别：{{User.userSex}}</p>
+            <p>电话：{{User.userPhone}}</p>
+            <p>状态：{{User.userStatus}}</p>
+            <p>个性签名：{{User.userMatto}}</p>
           </div>
         </div>
         <div class="personalsetting" @click="tomylike">
@@ -39,21 +43,36 @@ export default {
         user_id: "20021010",
         user_avatar: require("../assets/images/reyi.jpg"),
         user_username: "Reyi",
-        user_status: "正常"
+        user_sex: "女",
+        user_phone: "123123",
+        user_status: "正常",
+        user_Matto: "冲鸭冲鸭！！！！！！！！"
       },
+      User: {},
       cardlist: [
         {
-          card_userid: "",
-          card_id: "",
-          card_username: "刘人语",
-          card_avatarsrc: require("../assets/images/user.jpg"),
-          card_describe: "刘人语小朋友爸爸也爱你",
-
-          card_imgsrc:
-            "https://wx2.sinaimg.cn/mw690/b4917656gy1g7umi7pu4pj21jk1jku10.jpg",
+          postId: "3",
+          postAuthor: "菜谱大师",
+          userAvatar: require("../assets/images/head/head2_1.png"),
+          postContent:
+            "【超级香酥的蜂蜜脆吐司】吐司的神仙吃法了解一下？超级香酥的蜂蜜脆吐司，当早餐甜点都合适，,香酥好吃,做早餐简直太好吃了,烘焙小白们一定要试试~[哈哈]1、准备好食材,吐司去掉四边,切成三角形。黄油隔热水融化。融化的黄油中加入一勺蜂蜜。勾吐司两面都刷上黄油蜂蜜,再撒一些粗粒砂糖。2、烤箱提前预热,上下火180度烤20分钟即可。",
+          postImgsrc:
+            "https://ww2.sinaimg.cn/orj360/62391dc8ly1gdogjxodn7j20u013qdlh.jpg",
           comment_list: [
-            { cmtusername: "t", cmt: "pickpickpick" },
-            { cmtusername: "bbbbb", cmt: "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiii" }
+            { cmtusername: "吃货吃吃吃", cmt: "好香！周末试试！！" },
+            { cmtusername: "user1231231", cmt: "啊，好懒，我还是去买吧" }
+          ]
+        },
+        {
+          postId: "2",
+          postAuthor: "刘人语reyi",
+          userAvatar: require("../assets/images/user.jpg"),
+          postContent: "我的新剧小美满上线啦！就在腾讯视频，快来看甜甜的恋爱吧",
+          postImgsrc:
+            "https://wx3.sinaimg.cn/large/007jQkvLgy1gdovhzy1vdj356o3ggqvg.jpg",
+          comment_list: [
+            { cmtusername: "追剧狂魔", cmt: "周四晚八点准时收看！！！" },
+            { cmtusername: "yeahzzzz", cmt: "你好可爱啊！！！" }
           ]
         }
       ]
@@ -67,12 +86,39 @@ export default {
       this.$router.push({ path: "/setting" });
     },
     tomylike() {
-      alert("like");
+      
+     
     }
   },
- 
-};
+  mounted() {
+    this.User = null;
+    var uid = localStorage.getItem("userinfoid");
+    this.$axios
+      .get("userTable", {
+        params: {
+          userId: uid
+        }
+      })
+      .then(res => {
+        let ulist = res.data.data.records[0];
+        this.User = ulist;
+      })
+      .catch(res => {
+        window.console.log(res);
+      });
 
+    // 获取帖子列表
+    // this.$axios.get("getpostbyu",{
+    //   params:u.userId
+    // },{
+    //    "emulateJSON": "true", "Content-Type": "application/json"
+    // }).then(res=>{
+    //   this.cardlist=res.data.data.record;
+    // }).catch(res=>{
+    //   window.console.log(res);
+    // })
+  }
+};
 </script>
 
 <style  scoped>
@@ -82,7 +128,7 @@ export default {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   margin: 20px 30px 15px;
   top: 90px;
-  height: 280px;
+  height: 420px;
   background-color: white;
 }
 .personalsetting {

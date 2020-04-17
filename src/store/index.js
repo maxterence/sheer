@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    icenterdeleteshow:false,
+    card_delshow:false,
     userinfo:'',
     mnguserinfo:'',
 
@@ -13,7 +13,7 @@ export default new Vuex.Store({
   getters:{
     userstate(state){
       if(state.userinfo == null){
-        return "请登录";
+        return "点击登录";
       }else{
         return state.userinfo;
       }
@@ -25,6 +25,9 @@ export default new Vuex.Store({
     },
     userlogin(state,v){
       state.userinfo = v;
+    },
+    icenterdelete(state){
+      state.card_delshow = !state.card_delshow;
     }
   },
   actions: {

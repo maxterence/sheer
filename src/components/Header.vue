@@ -1,7 +1,7 @@
 <template>
   <el-header style="height:61px;padding:0 10px;margin:0">
-    <img src="../assets/images/logo.png" alt="SHEER" class="headerlogo" />
-    
+    <img src="../assets/images/logo2s.png" alt="SHEER" class="headerlogo" />
+
     <div class="topmenu">
       <!-- 搜索 -->
       <el-input
@@ -10,6 +10,8 @@
         v-model="searchkeywords"
         clearable
         style="width:200px;"
+        @keyup.enter="searchloading"
+        v-loading.fullscreen.lock="loading"
       ></el-input>
       <el-button icon="el-icon-search" @click="handlesearch" circle style="margin-right:50px;"></el-button>
 
@@ -29,16 +31,15 @@
         width="45%"
         :modal-append-to-body="false"
       >
+        <el-input placeholder="请输入标题" v-model="userupdate.postTitle"></el-input>
         <el-input
           type="textarea"
           :autosize="{ minRows: 4, maxRows: 6}"
           placeholder="请输入内容"
-          v-model="userupdate.usertiptext"
+          v-model="userupdate.postContent"
         ></el-input>
         <p></p>
-        <span class="demonstration">推介度</span>
-        <el-rate v-model="userupdate.userrcm"></el-rate>
-        <p></p>
+        <el-input placeholder="好物链接" v-model="userupdate.postShopurl"></el-input>
         <el-upload
           class="upload-demo"
           action
@@ -52,7 +53,7 @@
         </el-upload>
         <span slot="footer" class="dialog-footer">
           <el-button @click="writedialogform = false">取 消</el-button>
-          <el-button type="primary" @click="writedialogform = false">确 定</el-button>
+          <el-button type="primary" @click="sendpost">确 定</el-button>
         </span>
       </el-dialog>
 
@@ -71,7 +72,10 @@
         <el-menu-item index="2" :route="{path: '/about'}">关于</el-menu-item>
         <el-submenu index="3">
           <template slot="title">
-            <span style="margin-right:5px" @click="()=>{$router.push('/i')}">{{$store.getters.userstate}}</span>
+            <span
+              style="margin-right:5px"
+              @click="()=>{$router.push('/i')}"
+            >{{$store.getters.userstate}}</span>
             <el-avatar :src="user.imgsrc" fit="fill" style="margin-left:8px;"></el-avatar>
           </template>
           <el-menu-item index="3-1" :route="{path:'/i'}">
@@ -80,7 +84,7 @@
           <el-menu-item index="3-2" :route="{path:'/setting'}">
             <i class="el-icon-setting"></i> 个人设置
           </el-menu-item>
-          <el-menu-item  @click="handleexit">
+          <el-menu-item @click="handleexit">
             <i class="el-icon-switch-button"></i> 退出
           </el-menu-item>
         </el-submenu>
@@ -95,35 +99,28 @@ export default {
     return {
       drawer: false,
       writedialogform: false,
-
+      loading: false,
+      file: "",
+      searchkeywords: "",
       userupdate: {
-        userrcm: "",
-        usertiptext: "",
+        postTitle: "",
+        postContent: "",
+        postShopurl: "",
         fileList: [{ filename: "", url: "" }]
       },
       user: {
         name: "",
-        imgsrc: "",
+        imgsrc: ""
         // name: "reyi",
         // imgsrc: require("@/assets/images/reyi.jpg")
-      },
-
-      searchkeywords: ""
+      }
     };
   },
-  computed: {
-    username() {
-      return this.$store.getters.userstate;
-    }
-  },
-  created:function() {
-     var a =localStorage.getItem("userinfo");
-    if (a =="" || a.isEmpty()) {
-      this.user.imgsrc="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";
-      
-    } else {
-      this.user.name = localStorage.getItem("userinfo.userName");
-      //this.user.imgsrc=localStorage.getItem("avatarsrc") ;
+  mounted() {},
+  created: function() {
+    var a = localStorage.getItem("userinfoname");
+    if (a != null) {
+      this.$store.commit("userlogin", a);
     }
   },
   methods: {
@@ -133,23 +130,46 @@ export default {
       this.writedialogform = false;
     },
     handlesearch() {
-      // console.log(this.searchkeywords);
-      this.searchkeywords = "";
+      this.loading = true;
+      setTimeout(() => {
+        let searchkeywords = this.searchkeywords;
+        this.$router.push({ path: "/search/" + searchkeywords });
+        this.searchkeywords = "";
+        this.loading = false;
+      }, 2000);
     },
     handleRemove() {
-      //console.log(file, fileList);
+      // window.console.log(file, fileList);
     },
     handlePreview() {
-      //console.log(file);
+      // window.console.log(file);
     },
+
     handleexit() {
-      alert("log out!");
-      localStorage.removeItem("userinfo");
-      this.$store.commit("userinfo");
-      setTimeout(() => {
-         this.$router.go(0)
-        // this.$router.push('/home');
-      }, 1000);
+      if (
+        this.$store.state.userinfo == null ||
+        localStorage.getItem("userinfoname") == null
+      ) {
+        this.$alert("您未登录！", {
+          confirmButtomText: "确定"
+        });
+      } else {
+        this.$message("已退出!");
+        localStorage.removeItem("userinfoid");
+        localStorage.removeItem("userinfoname");
+        localStorage.removeItem("userinfosex");
+        localStorage.removeItem("userinfophone");
+        localStorage.removeItem("userinfostatus");
+        localStorage.removeItem("userinfomatto");
+        this.$store.commit("userinfo");
+        setTimeout(() => {
+          this.$router.go(0);
+          // this.$router.push('/home');
+        }, 1000);
+      }
+    },
+    sendpost() {
+      this.writedialogform = false;
     }
   }
 };
@@ -161,6 +181,7 @@ export default {
   object-fit: contain;
   float: left;
   height: 62px;
+  margin-right: 50px;
 }
 .topmenu {
   float: right;

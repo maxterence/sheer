@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="abo">
     <el-row>
       <el-col :span="14" :offset="5">
         <div class="about">
@@ -42,6 +42,36 @@ export default {
     padding: 20px;
     margin: 10%;
     height: 400px;
+  }
+
+  .abo{
+    height: 92vh;
+    background: rgb(163, 119, 223);
+  background: -moz-linear-gradient(
+    270deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  );
+  background: -webkit-linear-gradient(
+    270deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  );
+  background: -o-linear-gradient(
+    270deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  );
+  background: -ms-linear-gradient(
+    270deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  );
+  background: linear-gradient(
+    0deg,
+    rgb(163, 119, 223) 6%,
+    rgb(254, 60, 78) 90%
+  );
   }
 
   

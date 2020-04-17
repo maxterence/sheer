@@ -1,6 +1,5 @@
 <template>
-
-    <div >
+  <div>
     <el-row style="height:80%">
       <el-col :span="6" :offset="9">
         <div class="loginform">
@@ -13,13 +12,11 @@
               <el-input v-model="userpass" placeholder="密码" show-password></el-input>
             </el-form-item>
             <el-button type="primary" round @click="handlelogin">登录</el-button>
-            
           </el-form>
         </div>
       </el-col>
     </el-row>
   </div>
- 
 </template>
 
 <script>
@@ -38,25 +35,47 @@ export default {
   },
   methods: {
     handlelogin() {
-       window.console.log("startlogin");
+      let that = this;
+      window.console.log("startlogin");
       // let data = {
       //   username: this.username,
       //   userpass: this.userpass
       // };
-      if (this.username == "" || this.userpass == "") {
-        alert("请输入用户名/密码！");
+      if (that.username == "" || that.userpass == "") {
+        that.$alert("请输入用户名/密码！", "请输入用户名/密码", {
+          confirmButtonText: "确定"
+        });
       } else {
-        this.$store.commit("mnglogin",this.username);
-        setTimeout(() => {
-          this.$router.push({path:'/managesys/showdetail'})
-        }, 2000);
-       
-       // axios.post("/mnglogin", data, {
-        //     header: { "Content-Type": "application/json" }
-        //   })
-        //   .then(res => {
-        //      window.console.log(res);
-        //   });
+        that.$axios
+          .get(
+            "adminTable",
+            {
+              adminId: that.username
+            },
+            {
+              emulateJSON: "true",
+              "Content-Type": "application/json"
+            }
+          )
+          .then(res => {
+            var uspass = that.userpass;
+            let pass = res.data.data.record[0].userPassword;
+            if (uspass == pass) {
+              that.$message("登录成功");
+              that.$store.commit("mnglogin", that.username);
+              setTimeout(() => {
+                that.$router.push({ path: "/managesys/showdetail" });
+              }, 2000);
+            } else {
+              that.$alert("错误","请重新登录",{
+                confirmButtonText: "确定"
+              })
+            }
+          })
+          .catch(res => {
+            window.console.log(res);
+          });
+        
       }
     }
   }
@@ -64,16 +83,15 @@ export default {
 </script>
 
 <style>
-  .loginform{
-    padding:40px 20px 40px 20px ;
-    background-color: white;
-    text-align: center;
-    margin-top: 25vh;
+.loginform {
+  padding: 40px 20px 40px 20px;
+  background-color: white;
+  text-align: center;
+  margin-top: 25vh;
   border-radius: 10px;
-   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
-  }
-  .loginform input{
-    margin-bottom: 1px;
-  }
-
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+.loginform input {
+  margin-bottom: 1px;
+}
 </style>
