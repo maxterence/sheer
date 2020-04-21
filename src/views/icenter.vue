@@ -1,15 +1,16 @@
 <template>
   <div class="icenter">
     <el-row>
-      <el-col :span="5" offset="3">
+      <el-col :span="7" offset="2">
         <div class="icenter_left">
-          <el-avatar :size="80" :src="user.user_avatar"></el-avatar>
+          <div style="text-align:center">
+            <el-avatar :size="80" :src="user.user_avatar"></el-avatar>
+          </div>
           <el-divider content-position="center">
-            <span style="font-weight:700">{{User.userUsername}}</span>
+            <span style="font-weight:bold;font-size:28px;text-align:center">{{User.userName}}</span>
           </el-divider>
-          <div>
-            <p>用户ID：{{User.userId}}</p>
-            <p>用户名：{{User.userName}}</p>
+          <div style="padding:0 10px;">
+            <p>ID：{{User.userId}}</p>
             <p>性别：{{User.userSex}}</p>
             <p>电话：{{User.userPhone}}</p>
             <p>状态：{{User.userStatus}}</p>
@@ -17,7 +18,7 @@
           </div>
         </div>
         <div class="personalsetting" @click="tomylike">
-          <span>点赞过的</span>
+          <span>我的喜欢</span>
           <i class="el-icon-arrow-right"></i>
         </div>
         <div class="personalsetting" @click="tosetting">
@@ -25,7 +26,7 @@
           <i class="el-icon-arrow-right"></i>
         </div>
       </el-col>
-      <el-col :span="16">
+      <el-col :span="14">
         <div class="container">
           <ActCard :card="card" v-for="(card, index) in cardlist" :key="index"></ActCard>
         </div>
@@ -86,48 +87,40 @@ export default {
       this.$router.push({ path: "/setting" });
     },
     tomylike() {
-      
-     
-    }
-  },
-  mounted() {
-    this.User = null;
-    var uid = localStorage.getItem("userinfoid");
-    this.$axios
-      .get("userTable", {
+      this.$router.push({ path: "/mylike" });
+    },
+    getuser() {
+      this.User = null;
+      var uid = localStorage.getItem("userinfoid");
+      return this.$axios.get("userTable", {
         params: {
           userId: uid
         }
-      })
-      .then(res => {
-        let ulist = res.data.data.records[0];
-        this.User = ulist;
-      })
-      .catch(res => {
-        window.console.log(res);
       });
+    },
+    getuserpost() {
+      var uid = localStorage.getItem("userinfoid");
+      return this.$axios.get("postTable/getByuserid", {
+        params: {
+          userId: uid
+        }
+      });
+    },
 
-    // 获取帖子列表
-    // this.$axios.get("getpostbyu",{
-    //   params:u.userId
-    // },{
-    //    "emulateJSON": "true", "Content-Type": "application/json"
-    // }).then(res=>{
-    //   this.cardlist=res.data.data.record;
-    // }).catch(res=>{
-    //   window.console.log(res);
-    // })
+  },
+
+  mounted() {
+    
   }
 };
 </script>
 
 <style  scoped>
 .icenter_left {
-  text-align: center;
   padding-top: 30px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   margin: 20px 30px 15px;
-  top: 90px;
+  top: 60px;
   height: 420px;
   background-color: white;
 }

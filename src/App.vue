@@ -4,7 +4,7 @@
       <router-view />
     </transition>
         
-          <el-backtop target="#app"></el-backtop>
+         
   </div>
 </template>
 
@@ -24,11 +24,6 @@ export default {
   height: 100%;
 }
 body {
-  /* background: rgb(255,203,157);
-background: -moz-linear-gradient(top,  rgba(255,203,157,1) 0%, rgba(255,180,115,1) 51%, rgba(255,155,67,1) 100%);
-background: -webkit-linear-gradient(top,  rgba(255,203,157,1) 0%,rgba(255,180,115,1) 51%,rgba(255,155,67,1) 100%);
-background: linear-gradient(to bottom,  rgba(255,203,157,1) 0%,rgba(255,180,115,1) 51%,rgba(255,155,67,1) 100%);
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffcb9d', endColorstr='#ff9b43',GradientType=0 ); */
 
   /* background: rgb(163, 119, 223);
   background: -moz-linear-gradient(

@@ -1,15 +1,18 @@
 <template>
   <el-container style="height: auto;">
     <el-aside width="200px" style="">
-      <h1>sheer bcm</h1>
+     <img src="@/assets/images/logo.png" alt="MANAGE SYS" class="headerlogo" />
       <el-menu :default-openeds="['1', '3']" router>
-        <el-menu-item-group title="数据">
+        <el-menu-item-group title=" ">
           
           <el-menu-item index="/managesys/showdetail" >查看</el-menu-item>
         </el-menu-item-group>
-        <el-menu-item-group title="管理">
+        <el-menu-item-group title=" ">
           <el-menu-item index="/managesys/postmanage">帖子管理</el-menu-item>
           <el-menu-item index="/managesys/usermanage">用户管理</el-menu-item>
+        </el-menu-item-group>
+        <el-menu-item-group title=" ">   
+          <el-menu-item @click="exit" >退出</el-menu-item>
         </el-menu-item-group>
       </el-menu>
     </el-aside>
@@ -31,7 +34,15 @@
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    exit(){
+      localStorage.removeItem("adminId");
+      localStorage.removeItem("adminName");
+      this.$route.push({path:'/'})
+    }
+  },
+};
 </script>
 
 <style>
@@ -43,6 +54,10 @@ export default {};
   top: 0;
   z-index: 100;
   width: 88vw;
+}
+.headerlogo{
+  width: 130px;
+  margin-left:15px ;
 }
 
 .el-aside {

@@ -65,7 +65,7 @@ export default {
             var userdata = res.data;
             var password = userdata.data.records[0].userPassword;
             var userinfo = res.data.data.records[0];
-            window.console.log(userdata.data);
+            // window.console.log(userdata.data);
             window.console.log(userinfo);
             if (userdata == null) {
               //返回为空提示用户未注册
@@ -73,13 +73,12 @@ export default {
               this.$alert("用户未注册", "登录失败", {
                 confirmButtonText: "确定"
               });
-              window.console.log(password);
+         
             } else if (password != loginps) {
               //用户密码错误
               checklogin = false;
-              this.$message("用户名过密码错误");
-              window.console.log(loginps);
-
+              this.$message("用户名或密码错误");
+              // window.console.log(loginps);
               checklogin = false;
             } else if (loginps == password) {
               // 登录成功
@@ -93,14 +92,23 @@ export default {
               localStorage.setItem("userinfostatus", userinfo.userStatus);
               localStorage.setItem("userinfophone", userinfo.userPhone);
               localStorage.setItem("userinfomatto", userinfo.userMatto);
+              localStorage.setItem("userinfoavatar", userinfo.userAvatar);
+              //状态设为已登录
               this.$store.commit(
                 "userlogin",
                 userdata.data.records[0].userName
               );
-              this.$message("登录成功");
+              if(userinfo.userStatus==0){
+                //若被封停，则提示
+                this.$alert("您的账号已被封停，部分功能将受限制！","警告！！",{
+                  comfirmButtomText:"确定",
+                })
+              }else{
+                this.$message("登录成功");
+              }
               setTimeout(() => {
                 this.$router.push({ path: "/" });
-              }, 500);
+              }, 2000);
             } else {
               //登录失败
               this.$message("登录失败");

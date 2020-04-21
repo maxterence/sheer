@@ -3,10 +3,12 @@
   <div style="float:left;margin:5px 15px;height:auto">
     <el-card class="box-card" :body-style="{ padding: '0' , }">
       <div slot="header" class="clearfix">
-        <p style="margin:10px 20px;font-size:25px;height:50px;float:right;color:orangered;">{{card.postAuthor}}</p>
+        <p
+          style="margin:10px 20px;font-size:25px;height:50px;float:right;color:orangered;"
+        >{{card.postAuthor}}</p>
         <el-avatar :src="card.userAvatar" :size="60" fit="fill"></el-avatar>
       </div>
-      <el-image :src="card.postImgsrc" class="image" fit="contain" />
+      <el-image :src="card.postImgsrc" v-if="card.postImgsrc" class="image" fit="contain" />
       <div class="card_describe">
         <h3>{{card.postTitle}}</h3>
         <span>{{card.postContent}}</span>
@@ -15,7 +17,7 @@
       <div class="btnlist">
         <!-- 喜欢按钮 -->
         <el-button circle icon="el-icon-star-off" class="card_btn" @click="like"></el-button>
-        
+
         <el-divider direction="vertical"></el-divider>
         <!-- 评论按钮组 -->
         <el-popover placement="buttom" width="420" trigger="click">
@@ -29,7 +31,8 @@
         <!-- 购物连接按钮 -->
         <el-popover placement="top" width="420" trigger="hover">
           <div>
-            直达链接：<el-link :href="card.postShopurl">{{card.postShopurl}}</el-link>           
+            直达链接：
+            <el-link :href="card.postShopurl">{{card.postShopurl}}</el-link>
           </div>
           <el-button circle icon="el-icon-shopping-cart-full" slot="reference" class="card_btn"></el-button>
         </el-popover>
@@ -63,11 +66,11 @@ export default {
       postId: "",
       userId: "",
       postAuthor: "",
-      postTitle:'',
+      postTitle: "",
       userAvatar: "",
       postContent: "",
       postImgsrc: "",
-      postShopurl:"",
+      postShopurl: "",
       comment_list: []
     }
   },
@@ -76,44 +79,98 @@ export default {
       mycomment: ""
     };
   },
-  // mounted: {
-  //   this.$axios.get("/commentTable/getbypost",{
-  //    params:card.card_id
-  //   },{
-  //     "emulateJSON":"true","content-Type":"application/json"
-  //   }).then(res=>{
-  //     this.card.comment_list=res.data.data.record
-  //   })
-  // },
-  methods:{
-    like(){
-      let that=this;
-      window.console.log(that.card.card_id);
-        //确认登录
-      if(that.$store.state.userinfo==null || localStorage.getItem("userInfo")==null){
+
+  methods: {
+    like() {
+      let that = this;
+      window.console.log(that.card.postId);
+      var userid = localStorage.getItem("userinfoid");
+      var cardid = that.card.postId;
+      //确认登录
+      if (
+        that.$store.state.userinfo == null ||
+        localStorage.getItem("userinfoid") == null
+      ) {
         //未登录
-        that.$alert("","请先登录！",{
-          confirmButtonText: "确定",
-        })
-      }else{
+        that.$alert("", "请先登录！", {
+          confirmButtonText: "确定"
+        });
+      } else if (localStorage.getItem("userinfostatus") == 0) {
+        that.$alert("您的账号已被封停，部分功能将受限制！", "警告！！", {
+          comfirmButtomText: "确定"
+        });
+      } else {
         //已登录，发送点赞信息
-      that.$message("喜欢的就要多点赞！")
+        that.$axios
+          .post(
+            "/likeTable",
+            {
+              userId: userid,
+              postId: cardid
+            },
+            { emulateJSON: "true", "Content-Type": "application/json" }
+          )
+          .then(res => {
+            if (res.data.code == 0) {
+              that.$message("喜欢的就要多点赞！");
+            } else {
+              that.$message.error("错误");
+            }
+          })
+          .catch(err => {
+            window.console.log(err);
+            that.$message.error("错误");
+          });
       }
-      window.console.log(that.card.card_id);
+      window.console.log(that.card.postId);
     },
-    comment(){
-      let that=this;
-      window.console.log(that.card.card_id+" has cmt "+that.mycomment)
-      if(that.$store.state.userinfo==null || localStorage.getItem("userinfoid")==null){
-           that.$alert("","请先登录！",{
-           confirmButtonText: "确定",
-        })
-      }else{
+    comment() {
+      let that = this;
+      let userid = localStorage.getItem("userinfoid");
+      let username = localStorage.getItem("userinfoname");
+      let comment = that.mycomment;
+      let postid = that.card.postId;
+
+      var commentdata = {
+        userId: userid,
+        userName: username,
+        postId: postid,
+        commentText: comment
+      };
+
+      window.console.log(
+        userid + " has cmt " + that.mycomment + "on" + that.card.postId
+      );
+      if (
+        that.$store.state.userinfo == null ||
+        localStorage.getItem("userinfoid") == null
+      ) {
+        that.$alert("", "请先登录！", {
+          confirmButtonText: "确定"
+        });
+      } else if (localStorage.getItem("userinfostatus") == 0) {
+        that.$alert("您的账号已被封停，部分功能将受限制！", "警告！！", {
+          comfirmButtomText: "确定"
+        });
+      } else {
         //已登陆
         //发送评论
-        that.$message("评论成功");
+
+        that.$axios
+          .post("/commentTable", commentdata, {
+            header: {
+              emulateJSON: "true",
+              "Content-Type": "application/json"
+            }
+          })
+          .then(res => {
+            if (res.data.code == 0) {
+              that.$message("评论成功");
+              that.mycomment = "";
+            }
+          });
       }
-    },
+    }
   }
 };
 </script>
@@ -142,11 +199,11 @@ export default {
 }
 .card_describe {
   text-decoration: saddlebrown;
-  padding: 0 10px 0 15px;
+  padding: 10px 10px 0 10px;
 }
 
 .btnlist {
-  margin: 10px 0 10px 15px;
+  margin: 30px 0 15px 15px;
 }
 .cmtBlog {
   border-top: 1px solid rgb(211, 211, 211);
@@ -159,6 +216,6 @@ ul {
 }
 h3 {
   margin: 5px 0;
-  color:o;
+  color: o;
 }
 </style>

@@ -10,13 +10,13 @@
       ></el-input>
       <el-button icon="el-icon-search" @click="handlesearch" circle style="margin-right:10vw;"></el-button>
     </div>
-    <el-table :data="tableData">
+    <el-table :data="posttable">
       <el-table-column type="expand" style="width:100%" :show-overflow-tooltip="true">
         <template slot-scope="props">
           <div class="expform">
             <el-image
               style="width:200px;margin-right:50px;float:left;padding:15px;"
-              :src="props.row.imageurl"
+              :src="props.row.postImgsrc"
               :fit="fit"
             ></el-image>
             <el-form label-position="left" inline class="demo-table-expand">
@@ -29,27 +29,25 @@
               <el-form-item label="内容">
                 <span
                   style="width:300px;word-break:break-all;white-space:normal;"
-                >{{ props.row.content }}</span>
+                >{{ props.row.postContent }}</span>
+              </el-form-item>
+              <el-form-item label="分享链接">
+               <el-link :href="props.row.postShopurl">{{ props.row.postShopurl }}</el-link> 
               </el-form-item>
             </el-form>
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="作者ID" prop="authorid"></el-table-column>
-      <el-table-column label="作者昵称" prop="author"></el-table-column>
-      <el-table-column label="标题" prop="title"></el-table-column>
+      <el-table-column label="作者ID" prop="userId"></el-table-column>
+      <el-table-column label="作者昵称" prop="postAuthor"></el-table-column>
+      <el-table-column label="标题" prop="postTitle"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row.postId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-  :page-size="20"
-  :pager-count="11"
-  layout="prev, pager, next"
-  :total="1000">
-</el-pagination>
+    <el-pagination v-if="page.total>page.size" :page-size="page.size" :pager-count="5" :current-page="page.current" @current-change="changeCurrent" layout="prev, pager, next" :total="page.total"></el-pagination>
   </div>
 </template>
 
@@ -57,58 +55,88 @@
 export default {
   data() {
     return {
-      tableData: [
+      posttable: [
         {
-          authorid: "123121",
-          author: "rrr",
-          title: "nonono",
-          content: "87o7gg87oggiyoiuy8ghgiuoyiy8",
-          imageurl:
+          postId:'1',
+          userId: "123121",
+          postAuthor: "rrr",
+          postTitle: "nonono",
+          postContent: "87o7gg87oggiyoiuy8ghgiuoyiy8",
+          postShopurl:"https://www.baidu.com",
+          postImgsrc:
             "https://wx2.sinaimg.cn/mw690/b4917656gy1g7umi7pu4pj21jk1jku10.jpg",
           commentnum: "13",
           likenum: "1"
         },
         {
-          authorid: "12323121",
-          author: "rerr",
-          title: "nonowwno",
-          content:
+          postId:'2',
+          userId: "12323121",
+          postAuthor: "rerr",
+          postTitle: "nonowwno",
+          postShopurl:"https://www.baidu.com",
+          postContent:
             "87o7gg87oggiyoiuy8ghgiuoyiy8asdfadsfadfadfadsfadsfasdlkcvl;alkdfjlakdjlfakjdf;lkajdf;asdfasdfadsfadsfadsfasdfasdfasdfadfkajsd;flkjas;kdfjalkjsfuyhasdifhahhdiuahvauhliuhsdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfargegfsfhstrhshshsthstrh",
-          imageurl:
+          postImgsrc:
             "https://wx2.sinaimg.cn/mw690/b4917656gy1g7umi7pu4pj21jk1jku10.jpg",
           commentnum: "177",
           likenum: "1"
         },
         {
-          authorid: "1235651",
-          author: "rgey42rr",
-          title: "nonono",
-          content: "87o7gg87oggiyoiuy8ghgiuoyiy8",
-          imageurl:
+          postId:'3',
+          userId: "1235651",
+          postAuthor: "rgey42rr",
+          postTitle: "nonono",
+           postShopurl:"https://www.baidu.com",
+          postContent: "87o7gg87oggiyoiuy8ghgiuoyiy8",
+          postImgsrc:
             "https://wx2.sinaimg.cn/mw690/b4917656gy1g7umi7pu4pj21jk1jku10.jpg",
           commentnum: "13",
           likenum: "1"
         },
         {
-          authorid: "12323421",
-          author: "rrrfasdfasas",
-          title: "nonono",
-          content: "87o7gg87oggiyoiuy8ghgiuoyiy8",
-          imageurl:
+          postId:'5',
+          userId: "12323421",
+          postAuthor: "rrrfasdfasas",
+          postTitle: "nonono",
+           postShopurl:"https://www.baidu.com",
+          postContent: "87o7gg87oggiyoiuy8ghgiuoyiy8",
+          postImgsrc:
             "https://wx2.sinaimg.cn/mw690/b4917656gy1g7umi7pu4pj21jk1jku10.jpg",
           commentnum: "112"
         }
       ],
-      searchkey: ""
+      searchkey: "",
+      page:{
+        size:5,
+        total:0,
+        current:1,
+      }
     };
   },
   methods: {
-    handleDelete(index, row) {
-      window.console.log(index, row);
+    handleDelete(delPid) {
+      window.console.log(delPid);
     },
     handlesearch() {
       window.console.log(this.searchkey);
+    },
+    getdata(){
+//        let that = this;
+//  let url = "/postTable?current="+that.page.current+"&size="+that.page.size;
+//       that.$axios.get(url).then(res=>{
+//         if(res.data.code==0){
+          
+//           that.posttable=res.data.data.records;
+//           that.page.total=res.data.data.total;
+//         }
+//       })
+    },
+    changeCurrent(current){
+      window.console.log(current)
     }
+  },
+  created:{
+
   }
 };
 </script>

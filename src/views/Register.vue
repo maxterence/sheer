@@ -12,33 +12,26 @@
             label-width="100px"
             class="demo-ruleForm"
           >
-            <div style="margin:20px 0 30px 60px;">
-              <button style="margin-left:40px" primary @click.prevent="selectavatar=true">更改头像</button>
-              <img style="width:60px;margin-left:60px" :src="newuser.imgsrc" />
-            </div>
-            <el-dialog top="200px" title="选择头像" :visible.sync="selectavatar" style="height:600px">
-              <ul style="list-style:none;" class="avaimgs">
-                <li @click="newuser.imgsrc=require('../assets/images/head/head1_1.png')">
-                  <img src="../assets/images/head/head1_1.png" />
-                </li>
-                <li @click="newuser.imgsrc=require('../assets/images/head/head1_2.png')">
-                  <img src="../assets/images/head/head1_2.png" />
-                </li>
-                <li @click="newuser.imgsrc=require('../assets/images/head/head1_3.png')">
-                  <img src="../assets/images/head/head1_3.png" />
-                </li>
-                <li @click="newuser.imgsrc=require('../assets/images/head/head2_1.png')">
-                  <img src="../assets/images/head/head2_1.png" />
-                </li>
-                <li @click="newuser.imgsrc=require('../assets/images/head/head2_2.png')">
-                  <img src="../assets/images/head/head2_2.png" />
-                </li>
-                <li @click="newuser.imgsrc=require('../assets/images/head/head2_3.png')">
-                  <img src="../assets/images/head/head2_3.png" />
-                </li>
-              </ul>
-            </el-dialog>
-            <el-form-item label="登录名" style="width:70%" prop="userid">
+<el-form-item style="display:inline-block" label="头像">
+
+
+            <el-upload
+              class="avatar-uploader "
+              action="http://localhost:8099/addImage"
+              name="image_data"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+              style="margin-left:50px"
+            >
+              <el-avatar v-if="imageUrl" :src="imageUrl" :size=120 :fit="none" style="border: 1px dashed #d9d9d9;"></el-avatar>
+              <i v-else class="el-icon-plus avatar-uploader-icon" style="border: 1px dashed #d9d9d9;"></i>
+            </el-upload>
+</el-form-item>
+
+
+          
+            <el-form-item label="登录名" style="width:70%">
               <el-input v-model="newuser.userid" placeholder="手机号即登录ID"></el-input>
             </el-form-item>
             <el-form-item label="昵称" style="width:70%">
@@ -97,23 +90,24 @@ export default {
     return {
       selectavatar: false,
       msg: "",
+      imageUrl: "",
       newuser: {
         userid: "",
-        imgsrc: "",
+        avatarsrc: "",
         username: "",
         password: "",
         cpassword: "",
         sex: "",
         matto: "",
-        phone: "",
+        phone: ""
       },
       rules: {
         password: [{ validator: validatePass, trigger: "blur" }],
-        cpassword: [{ validator: validatePass2, trigger: "blur" }],
-        userid: [
-          { required: true, message: "请输入手机号", trigger: "blur" },
-          { min: 11, max: 11, message: "11位手机号", trigger: "blur" }
-        ]
+        cpassword: [{ validator: validatePass2, trigger: "blur" }]
+        // userid: [
+        //   { required: true, message: "请输入手机号", trigger: "blur" },
+        //   { min: 11, max: 11, message: "11位手机号", trigger: "blur" }
+        // ]
       }
     };
   },
@@ -133,6 +127,7 @@ export default {
       var userPhone = that.newuser.phone;
       var userMatto = that.newuser.matto;
       var userStatus = 1;
+      var userAvatar = that.newuser.avatarsrc;
 
       var newuserdata = {
         userId: userId,
@@ -141,9 +136,9 @@ export default {
         userStatus: userStatus,
         userPhone: userPhone,
         userSex: userSex,
-        userMatto: userMatto
+        userMatto: userMatto,
+        userAvatar: userAvatar
       };
-
 
       that.$axios
         .post("userTable", newuserdata, {
@@ -151,7 +146,8 @@ export default {
             emulateJSON: "true",
             "Content-Type": "application/json"
           }
-        }).then(res => {
+        })
+        .then(res => {
           window.console.log(res);
           if (res.data.msg == "执行成功") {
             checksuccess = true;
@@ -160,14 +156,13 @@ export default {
           if (checksuccess) {
             //注册成功的操作
             that.$alert("注册成功！请输入账号密码登录", "Sheer", {
-              confirmButtonText: "确定",
+              confirmButtonText: "确定"
             });
             that.$router.push("/login");
           } else {
             // 注册失败的操作
             that.$alert("注册失败，请重新输入注册信息", "Sorry", {
-              confirmButtonText: "确定",
-
+              confirmButtonText: "确定"
             });
             that.resetForm("newuser");
           }
@@ -175,61 +170,55 @@ export default {
         .catch(res => {
           window.console.log(res);
         });
+    },
+    beforeAvatarUpload() {
+      window.console.log("bau");
+    },
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+      window.console.log("image:"+res.data);
+
+      //  得到上传图片的名字
+      this.newuser.avatarsrc = res.data;
     }
   }
 };
 </script>
 
 <style scoped>
+.avatar-uploader .el-upload{
+  border: 1px dashed #474747;
+ 
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+ 
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 78px;
+  height: 78px;
+  line-height: 78px;
+  text-align: center;
+}
+.avatar {
+  width: 78px;
+  height: 78px;
+  display: block;
+}
 .register {
   width: 100%;
   margin-top: 80px;
-  padding: 40px 60px  40px;
+  padding: 40px 60px 40px;
   background-color: white;
 }
 .register input {
   margin: 10px;
 }
-.avaimgs img {
-  width: 60px;
-}
-.avaimgs li {
-  padding: 10px;
-  border: 1px rgb(60, 60, 71) dashed;
-  margin: 0 0 10px 10px;
-  display: inline-block;
-}
-.avaimgs li :hover {
-  cursor: pointer;
-  background-color: rgb(209, 209, 209);
-}
 
-body{
-    background: rgb(163, 119, 223);
-  background: -moz-linear-gradient(
-    270deg,
-    rgb(163, 119, 223) 6%,
-    rgb(254, 60, 78) 90%
-  );
-  background: -webkit-linear-gradient(
-    270deg,
-    rgb(163, 119, 223) 6%,
-    rgb(254, 60, 78) 90%
-  );
-  background: -o-linear-gradient(
-    270deg,
-    rgb(163, 119, 223) 6%,
-    rgb(254, 60, 78) 90%
-  );
-  background: -ms-linear-gradient(
-    270deg,
-    rgb(163, 119, 223) 6%,
-    rgb(254, 60, 78) 90%
-  );
-  background: linear-gradient(
-    0deg,
-    rgb(163, 119, 223) 6%,
-    rgb(254, 60, 78) 90%
-  );
-}
+
 </style>

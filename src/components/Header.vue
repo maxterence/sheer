@@ -4,16 +4,6 @@
 
     <div class="topmenu">
       <!-- 搜索 -->
-      <el-input
-        placeholder="搜索动态"
-        prefix-icon="el-icon-search"
-        v-model="searchkeywords"
-        clearable
-        style="width:200px;"
-        @keyup.enter="searchloading"
-        v-loading.fullscreen.lock="loading"
-      ></el-input>
-      <el-button icon="el-icon-search" @click="handlesearch" circle style="margin-right:50px;"></el-button>
 
       <!-- 发布 -->
       <el-button
@@ -40,20 +30,24 @@
         ></el-input>
         <p></p>
         <el-input placeholder="好物链接" v-model="userupdate.postShopurl"></el-input>
+
         <el-upload
           class="upload-demo"
-          action
+          action="http://localhost:8099/addImage"
+          name="image_data"
           :on-preview="handlePreview"
           :on-remove="handleRemove"
-          :file-list="userupdate.fileList"
+          :on-success="handleSuccess"
+          :file-list="fileList"
           list-type="picture"
+          multiple
         >
           <el-button size="small" type="primary">点击上传</el-button>
           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
         </el-upload>
         <span slot="footer" class="dialog-footer">
           <el-button @click="writedialogform = false">取 消</el-button>
-          <el-button type="primary" @click="sendpost">确 定</el-button>
+          <el-button type="primary" @click="sendpost">发 送</el-button>
         </span>
       </el-dialog>
 
@@ -69,19 +63,23 @@
         <el-menu-item index="1" :route="{path: '/'}">
           <i class="el-icon-s-home"></i> 发现
         </el-menu-item>
-        <el-menu-item index="2" :route="{path: '/about'}">关于</el-menu-item>
-        <el-submenu index="3">
+        <el-menu-item index="2" :route="{path: '/searchinput'}">
+          <i class="el-icon-search"></i>搜索
+        </el-menu-item>
+        <el-menu-item index="3" :route="{path: '/mylike'}">我的喜欢</el-menu-item>
+        <el-menu-item index="4" :route="{path: '/about'}">关于</el-menu-item>
+        <el-submenu index="5">
           <template slot="title">
             <span
               style="margin-right:5px"
               @click="()=>{$router.push('/i')}"
             >{{$store.getters.userstate}}</span>
-            <el-avatar :src="user.imgsrc" fit="fill" style="margin-left:8px;"></el-avatar>
+            <el-avatar :src="userImgsrc" :fit="fill" style="margin-left:8px;"></el-avatar>
           </template>
-          <el-menu-item index="3-1" :route="{path:'/i'}">
+          <el-menu-item index="5-1" :route="{path:'/i'}">
             <i class="el-icon-user"></i> 个人中心
           </el-menu-item>
-          <el-menu-item index="3-2" :route="{path:'/setting'}">
+          <el-menu-item index="5-2" :route="{path:'/setting'}">
             <i class="el-icon-setting"></i> 个人设置
           </el-menu-item>
           <el-menu-item @click="handleexit">
@@ -102,50 +100,34 @@ export default {
       loading: false,
       file: "",
       searchkeywords: "",
+      upload: {},
       userupdate: {
         postTitle: "",
         postContent: "",
         postShopurl: "",
-        fileList: [{ filename: "", url: "" }]
+        postImgsrc: ""
       },
-      user: {
-        name: "",
-        imgsrc: ""
-        // name: "reyi",
-        // imgsrc: require("@/assets/images/reyi.jpg")
-      }
+      fileList: [],
+      uploadFile: {},
+      userImgsrc: ""
     };
   },
   mounted() {},
   created: function() {
-    var a = localStorage.getItem("userinfoname");
-    if (a != null) {
-      this.$store.commit("userlogin", a);
+    var username = localStorage.getItem("userinfoname");
+    var useravatar = localStorage.getItem("userinfoavatar");
+    if (username != null) {
+      this.$store.commit("userlogin", username);
+    }
+    if (useravatar != null) {
+      this.userImgsrc = useravatar;
+    } else {
+      this.userImgsrc = require("@/assets/images/head.png");
     }
   },
   methods: {
-    handleClose() {},
-    handlepostupdate() {
-      // console.log(this.userupdate);
-      this.writedialogform = false;
-    },
-    handlesearch() {
-      this.loading = true;
-      setTimeout(() => {
-        let searchkeywords = this.searchkeywords;
-        this.$router.push({ path: "/search/" + searchkeywords });
-        this.searchkeywords = "";
-        this.loading = false;
-      }, 2000);
-    },
-    handleRemove() {
-      // window.console.log(file, fileList);
-    },
-    handlePreview() {
-      // window.console.log(file);
-    },
-
     handleexit() {
+      //退出登录并清除登录信息
       if (
         this.$store.state.userinfo == null ||
         localStorage.getItem("userinfoname") == null
@@ -161,6 +143,7 @@ export default {
         localStorage.removeItem("userinfophone");
         localStorage.removeItem("userinfostatus");
         localStorage.removeItem("userinfomatto");
+        localStorage.removeItem("userinfoavatar");
         this.$store.commit("userinfo");
         setTimeout(() => {
           this.$router.go(0);
@@ -169,7 +152,73 @@ export default {
       }
     },
     sendpost() {
+      let that=this;
+      //发送帖子的方法
+      var postdata = {
+        userId: localStorage.getItem("userinfoid"),
+        userAvatar: localStorage.getItem("userinfoavatar"),
+        postAuthor: localStorage.getItem("userinfoname"),
+        postTitle: this.userupdate.postTitle,
+        postContent: this.userupdate.postContent,
+        postShopurl: this.userupdate.postShopurl,
+        postImgsrc: this.userupdate.postImgsrc
+      };
+
+ if (
+        that.$store.state.userinfo == null ||
+        localStorage.getItem("userinfoid") == null
+      ) {
+        //未登录
+        that.$alert("", "请先登录！", {
+          confirmButtonText: "确定"
+        });
+      } else if (localStorage.getItem("userinfostatus") == 0) {
+        that.$alert("您的账号已被封停，部分功能将受限制！", "警告！！", {
+          comfirmButtomText: "确定"
+        });
+      }  
+
+
+      this.$axios
+        .post("/postTable", postdata, {
+          header: {
+            " emulateJSON": "true",
+            "Content-Type": "application/json"
+          }
+        })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.$message({ message: "发布成功！", type: "success" });
+          } else {
+            this.$message.error("发布失败");
+          }
+        });
+
       this.writedialogform = false;
+    },
+
+    handleSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+      window.console.log("postimgsrc:" + res.data);
+
+      //  得到上传图片的名字
+      this.userupdate.postImgsrc = res.data;
+    },
+    beforeAvatarUpload(file) {
+      const isLt2M = file.size / 1024 / 1024 < 9;
+
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 9MB!");
+      }
+      return isLt2M;
+    },
+
+    handleClose() {},
+    handleRemove() {
+      // window.console.log(file, fileList);
+    },
+    handlePreview() {
+      // window.console.log(file);
     }
   }
 };
@@ -177,6 +226,29 @@ export default {
 
 
 <style scoped>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 .headerlogo {
   object-fit: contain;
   float: left;

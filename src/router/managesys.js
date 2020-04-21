@@ -9,7 +9,10 @@ let routes=[
     {
         path:'/managelogin',
         component:mnglogin,
-        name:'managelogin'
+        name:'managelogin',
+        meta:{
+            title:"登录"
+          },
       },
     {    
         path:'/managesys',
@@ -23,6 +26,7 @@ let routes=[
         },
         meta:{
             requireAuth: true,
+            title:"管理系统"
         },
         children:[
         {

@@ -36,6 +36,8 @@ export default {
   methods: {
     handlelogin() {
       let that = this;
+      let uname = that.username;
+        let uspass = that.userpass;
       window.console.log("startlogin");
       // let data = {
       //   username: this.username,
@@ -48,26 +50,27 @@ export default {
       } else {
         that.$axios
           .get(
-            "adminTable",
+            "/adminTable",
             {
-              adminId: that.username
+              params:{adminId: uname}
             },
             {
-              emulateJSON: "true",
+             " emulateJSON": "true",
               "Content-Type": "application/json"
             }
           )
           .then(res => {
-            var uspass = that.userpass;
-            let pass = res.data.data.record[0].userPassword;
+            let pass = res.data.data.records[0].adminPassword;
             if (uspass == pass) {
               that.$message("登录成功");
               that.$store.commit("mnglogin", that.username);
+              localStorage.setItem("adminId",res.data.data.records[0].adminId);
+              localStorage.setItem("adminName",res.data.data.records[0].adminName);
               setTimeout(() => {
                 that.$router.push({ path: "/managesys/showdetail" });
-              }, 2000);
+              }, 1000);
             } else {
-              that.$alert("错误","请重新登录",{
+              that.$alert("请重新登录","错误",{
                 confirmButtonText: "确定"
               })
             }

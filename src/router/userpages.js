@@ -1,14 +1,17 @@
 import Home from '../views/Home.vue'
 import setting from '../views/setting.vue'
 import main from '../views/Main.vue'
-
+import icenter from'../views/icenter.vue'
 
 
 let routes=[
     {
         path:'/',
         name:'main',
-        component:main,      
+        component:main, 
+        meta:{
+          title:"Sheer"
+        },
         children:[
             {
                 path: '/',
@@ -25,35 +28,36 @@ let routes=[
                 component:()=>import('../views/search.vue'),
               },
               {
+                path:'/searchinput',
+                component:()=>import('../views/SearchInput.vue'),
+              },
+              {
                 path: '/about',
                 name: 'about',
                
-                component: () => import( '../views/About.vue')
+                component: () => import( '../views/About.vue'),
+                meta:{
+                  title:"关于"
+                },
               },
               {
                 path:'/login',
                 name:'login',
-                component: () => import('../views/Login.vue')
+                component: () => import('../views/Login.vue'),
+                meta:{
+                  title:"登录"
+                },
               },
               {
                 path:'/register',
-                component: () => import('../views/Register.vue')
+                component: () => import('../views/Register.vue'),
+                meta:{
+                  title:"注册"
+                },
               },
               {
                 path:'/i',
-                component:() => import('../views/icenter.vue'),
-                beforeEnter: (to, from, next) => {
-                  var a =localStorage.getItem("userinfoname"); 
-                  if(a){
-                      next();
-                  }else{
-                      next({path:'/login'});
-                  }
-              },
-              },
-              {
-                path:'/setting',
-                component:setting,
+                component: icenter,
                 beforeEnter: (to, from, next) => {
                   var a =localStorage.getItem("userinfoname"); 
                   if(a){
@@ -62,6 +66,33 @@ let routes=[
                       next({path:'/login'});
                   }
                 },
+                meta:{
+                  title:"个人中心"
+                },
+              },
+              {
+                 path:'mylike',
+                 component: () => import('@/components/userpage/mylike.vue'),
+                 beforeEnter: (to, from, next) => {
+                   var a =localStorage.getItem("userinfoname"); 
+                   if(a){
+                     next();
+                    }else{
+                      // this.$alert("登录后才能查看哦", "请登录", {
+                      //   confirmButtonText: "确定"
+                      // });
+                      alert("请登录")
+                       next({path:'/login'});
+                   }
+                 },
+                 meta:{
+                  title:"我的喜欢",
+                },
+              },
+
+              {
+                path:'/setting',
+                component:setting,
                 children:[
                   {
                     path:'',    //默认
@@ -69,10 +100,12 @@ let routes=[
                   },
                   {
                     path:'setpassword',
-                    component: () => import('../components/setpassword.vue')
-                    
+                    component: () => import('../components/setpassword.vue')  
                   }
-                ]
+                ],
+                meta:{
+                  title:"设置"
+                },
               },
         ]
     }
