@@ -93,10 +93,11 @@ export default {
               localStorage.setItem("userinfophone", userinfo.userPhone);
               localStorage.setItem("userinfomatto", userinfo.userMatto);
               localStorage.setItem("userinfoavatar", userinfo.userAvatar);
+              this.$store.commit("userhead",userinfo.userAvatar);
               //状态设为已登录
               this.$store.commit(
                 "userlogin",
-                userdata.data.records[0].userName
+                userinfo.userName
               );
               if(userinfo.userStatus==0){
                 //若被封停，则提示

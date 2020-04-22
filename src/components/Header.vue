@@ -43,7 +43,7 @@
           multiple
         >
           <el-button size="small" type="primary">点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过9M</div>
         </el-upload>
         <span slot="footer" class="dialog-footer">
           <el-button @click="writedialogform = false">取 消</el-button>
@@ -113,6 +113,7 @@ export default {
     };
   },
   mounted() {},
+  
   created: function() {
     var username = localStorage.getItem("userinfoname");
     var useravatar = localStorage.getItem("userinfoavatar");
@@ -120,6 +121,7 @@ export default {
       this.$store.commit("userlogin", username);
     }
     if (useravatar != null) {
+      // this.$store.commit("userhead",useravatar)
       this.userImgsrc = useravatar;
     } else {
       this.userImgsrc = require("@/assets/images/head.png");
@@ -206,11 +208,14 @@ export default {
     },
     beforeAvatarUpload(file) {
       const isLt2M = file.size / 1024 / 1024 < 9;
+      const filetype = file.type;
+ 
+      var isPic = ((filetype == "image/jpeg" && filetype == "image/png")?true:false);
 
       if (!isLt2M) {
         this.$message.error("上传头像图片大小不能超过 9MB!");
       }
-      return isLt2M;
+      return isLt2M||isPic ;
     },
 
     handleClose() {},

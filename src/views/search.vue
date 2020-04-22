@@ -79,17 +79,17 @@ export default {
           window.console.log(this.likepostlist);
         if(res.data.code==0){
           window.console.log(res.data);
-          that.$message("成功");
           if(!res.data.data.records){
             var dat = res.data.data;
-          
             that.likepostlist=dat;
-         
-            
             window.console.log("aaaa");
             window.console.log(this.likepostlist);
             
+          }else if(res.data.data.records[0]==null){
+            
+            this.$message.error("无数据");
           }else{
+            that.$message("成功");
             window.console.log("babb")
             that.likepostlist=res.data.data.records;
             

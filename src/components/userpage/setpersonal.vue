@@ -50,7 +50,6 @@ export default {
     return {
       imageUrl: "",
       form: {
-        
         userName: "",
         userSex: "",
         userPhone: "",
@@ -60,43 +59,44 @@ export default {
     };
   },
   methods: {
+    //更新用户信息
     onSubmit() {
       var updateform = {
-        userId:localStorage.getItem("userinfoid"),
-        userName:this.form.userName,
-        userSex:this.form.userSex,
-        userPhone:this.form.userPhone,
-        userMatto:this.form.userMatto,
-        userAvatar:this.form.userAvatar,
-      }
-      this.$axios.put("/userTable", updateform,{
-        header:{
-          "emulateJSON":"ture",
-          "Content-Type":"application/json"
-        }
-      }).then(res => {
-        window.console.log(res);
-        if(res.data.code==0){
-          this.$message("修改成功");
-        }else{
-          this.$message.error("修改失败");
-          
-        }
-        
-      }).catch(err=>{
-        window.console.log(err);
-      });
+        userId: localStorage.getItem("userinfoid"),
+        userName: this.form.userName,
+        userSex: this.form.userSex,
+        userPhone: this.form.userPhone,
+        userMatto: this.form.userMatto,
+        userAvatar: this.form.userAvatar
+      };
+      this.$axios
+        .put("/userTable", updateform, {
+          header: {
+            emulateJSON: "ture",
+            "Content-Type": "application/json"
+          }
+        })
+        .then(res => {
+          window.console.log(res);
+          if (res.data.code == 0) {
+            this.$message("修改成功");
+          } else {
+            this.$message.error("修改失败");
+          }
+        })
+        .catch(err => {
+          window.console.log(err);
+        });
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
       this.form.userAvatar = res.data;
     },
     beforeAvatarUpload(file) {
-     
       const isLt2M = file.size / 1024 / 1024 < 9;
 
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error("上传图片大小不能超过 9MB!");
       }
       return isLt2M;
     }

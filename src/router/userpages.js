@@ -96,11 +96,11 @@ let routes=[
                 children:[
                   {
                     path:'',    //默认
-                    component: () => import('../components/setpersonal.vue')
+                    component: () => import('../components/userpage/setpersonal.vue')
                   },
                   {
                     path:'setpassword',
-                    component: () => import('../components/setpassword.vue')  
+                    component: () => import('../components/userpage/setpassword.vue')  
                   }
                 ],
                 meta:{

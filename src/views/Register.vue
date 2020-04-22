@@ -12,25 +12,31 @@
             label-width="100px"
             class="demo-ruleForm"
           >
-<el-form-item style="display:inline-block" label="头像">
+            <el-form-item style="display:inline-block" label="头像">
+              <el-upload
+                class="avatar-uploader"
+                action="http://localhost:8099/addImage"
+                name="image_data"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+                style="margin-left:50px"
+              >
+                <el-avatar
+                  v-if="imageUrl"
+                  :src="imageUrl"
+                  :size="120"
+                  :fit="none"
+                  style="border: 1px dashed #d9d9d9;"
+                ></el-avatar>
+                <i
+                  v-else
+                  class="el-icon-plus avatar-uploader-icon"
+                  style="border: 1px dashed #d9d9d9;"
+                ></i>
+              </el-upload>
+            </el-form-item>
 
-
-            <el-upload
-              class="avatar-uploader "
-              action="http://localhost:8099/addImage"
-              name="image_data"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload"
-              style="margin-left:50px"
-            >
-              <el-avatar v-if="imageUrl" :src="imageUrl" :size=120 :fit="none" style="border: 1px dashed #d9d9d9;"></el-avatar>
-              <i v-else class="el-icon-plus avatar-uploader-icon" style="border: 1px dashed #d9d9d9;"></i>
-            </el-upload>
-</el-form-item>
-
-
-          
             <el-form-item label="登录名" style="width:70%">
               <el-input v-model="newuser.userid" placeholder="手机号即登录ID"></el-input>
             </el-form-item>
@@ -176,7 +182,7 @@ export default {
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
-      window.console.log("image:"+res.data);
+      window.console.log("image:" + res.data);
 
       //  得到上传图片的名字
       this.newuser.avatarsrc = res.data;
@@ -186,13 +192,12 @@ export default {
 </script>
 
 <style scoped>
-.avatar-uploader .el-upload{
+.avatar-uploader .el-upload {
   border: 1px dashed #474747;
- 
+
   border-radius: 6px;
   cursor: pointer;
   position: relative;
- 
 }
 .avatar-uploader .el-upload:hover {
   border-color: #409eff;
@@ -219,6 +224,4 @@ export default {
 .register input {
   margin: 10px;
 }
-
-
 </style>

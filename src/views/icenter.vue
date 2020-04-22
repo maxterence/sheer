@@ -4,12 +4,12 @@
       <el-col :span="7" offset="2">
         <div class="icenter_left">
           <div style="text-align:center">
-            <el-avatar :size="80" :src="user.user_avatar"></el-avatar>
+            <el-avatar :size="80" :src="User.userAvatar"></el-avatar>
           </div>
           <el-divider content-position="center">
             <span style="font-weight:bold;font-size:28px;text-align:center">{{User.userName}}</span>
           </el-divider>
-          <div style="padding:0 10px;">
+          <div style="padding:0 20px;">
             <p>ID：{{User.userId}}</p>
             <p>性别：{{User.userSex}}</p>
             <p>电话：{{User.userPhone}}</p>
@@ -96,21 +96,39 @@ export default {
         params: {
           userId: uid
         }
+      }).then(res=>{
+        if(res.data.code==0){
+          this.User=res.data.data.records[0];
+          if(res.data.data.records[0].userStatus==0){
+            this.$alert("您的账号已封停，相关功能将受限制！","警告",{
+              confirmButtomText:"确定"
+            })
+          }
+        }else{
+          this.$message.error("获取个人信息失败")
+        }
       });
     },
     getuserpost() {
       var uid = localStorage.getItem("userinfoid");
-      return this.$axios.get("postTable/getByuserid", {
+      return this.$axios.get("postTable/getbyuserid", {
         params: {
           userId: uid
         }
+      }).then(res=>{
+        this.cardlist=res.data.data.records;
+        window.console.log("获取"+uid+"帖子成功");
+      }).catch(err=>{
+          this.$message.error("获取帖子失败")
+        window.console.log(err);
       });
     },
 
   },
 
   mounted() {
-    
+    this.getuser();
+    this.getuserpost();
   }
 };
 </script>

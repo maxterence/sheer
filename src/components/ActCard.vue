@@ -47,7 +47,7 @@
         ></el-button>
       </div>
       <!-- 评论列表 -->
-      <div class="cmtBlog">
+      <div v-show="card.comment_list!=null" class="cmtBlog">
         <ul>
           <li v-for="uclist in card.comment_list " :key="uclist.userName">
             <span style="font-weight:bold">{{uclist.userName}}</span> :
@@ -55,6 +55,7 @@
           </li>
         </ul>
       </div>
+    
     </el-card>
   </div>
 </template>
@@ -80,6 +81,30 @@ export default {
     };
   },
 
+  mounted(){
+    window.console.log("mounted:"+this.card.postId);
+  },
+  beforeCreate(){
+    window.console.log("bced:"+this.card.postId);
+
+  },
+  created(){
+    window.console.log("created:"+this.card.postId);
+    let pid = this.card.postId;
+    this.$axios.get("/commentTable/getbypost",{
+      params:{
+        postId:pid
+      }
+    }).then(res=>{
+      if(res.data.code==0){
+        
+        this.card.comment_list=res.data.data.records;
+      }else{
+       window.console.log(pid+"has no comment"); 
+      }
+    })
+  },
+
   methods: {
     like() {
       let that = this;
@@ -97,7 +122,7 @@ export default {
         });
       } else if (localStorage.getItem("userinfostatus") == 0) {
         that.$alert("您的账号已被封停，部分功能将受限制！", "警告！！", {
-          comfirmButtomText: "确定"
+          confirmButtomText: "确定"
         });
       } else {
         //已登录，发送点赞信息

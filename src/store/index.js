@@ -8,7 +8,7 @@ export default new Vuex.Store({
     card_delshow:false,
     userinfo:'',
     mnguserinfo:'',
-
+    userinfohead:'',
   },
   getters:{
     userstate(state){
@@ -17,6 +17,13 @@ export default new Vuex.Store({
       }else{
         return state.userinfo;
       }
+    },
+    useravatar(state){
+        if(state.userinfohead == null){
+          return require("@/assets/images/head.png");
+        }else{
+          return state.userinfohead;
+        }
     }
   },
   mutations: {
@@ -28,6 +35,9 @@ export default new Vuex.Store({
     },
     icenterdelete(state){
       state.card_delshow = !state.card_delshow;
+    },
+    userhead(state,v){
+      state.userinfohead=v;
     }
   },
   actions: {
