@@ -5,12 +5,12 @@
         <el-col :span="6">
           <div class="grid-content">
             <div class="card-panel-iconf-div">
-              <span class="iconfont panel-icon">&#xe650;</span>
+              <i class="el-icon-user"></i>
             </div>
             <div>
               <div class="card-panel-desc">
                 <div class="title">用户数量</div>
-                <countTo :startVal="0" :endVal="6666" :duration="3000"></countTo>
+                <countTo :startVal="0" :endVal="usercount" :duration="1000"></countTo>
               </div>
             </div>
           </div>
@@ -18,12 +18,12 @@
         <el-col :span="6">
           <div class="grid-content">
             <div class="card-panel-iconf-div">
-              <span class="iconfont panel-icon">&#xe603;</span>
+              <i class="el-icon-s-order"></i>
             </div>
             <div>
               <div class="card-panel-desc">
                 <div class="title">博客总数</div>
-                <countTo :startVal="0" :endVal="6666" :duration="3000"></countTo>
+                <countTo :startVal="0" :endVal="postcount" :duration="2000"></countTo>
               </div>
             </div>
           </div>
@@ -31,12 +31,12 @@
         <el-col :span="6">
           <div class="grid-content">
             <div class="card-panel-iconf-div">
-              <span class="iconfont panel-icon">&#xe68d;</span>
+             <i class="el-icon-s-data"></i>
             </div>
             <div>
               <div class="card-panel-desc">
                 <div class="title">最新博客</div>
-                <countTo :startVal="0" :endVal="6666" :duration="3000"></countTo>
+                <countTo :startVal="0" :endVal="postcount" :duration="2000"></countTo>
               </div>
             </div>
           </div>
@@ -44,7 +44,7 @@
         <el-col :span="6">
           <div class="grid-content">
             <div class="card-panel-iconf-div">
-              <span class="iconfont panel-icon">&#xe672;</span>
+             <i class="el-icon-view"></i>
             </div>
             <div>
               <div class="card-panel-desc">
@@ -56,7 +56,6 @@
         </el-col>
       </el-row>
     </div>
-
     <BlogandUserchar></BlogandUserchar>
   </div>
 </template>
@@ -64,8 +63,40 @@
 <script>
 import countTo from "vue-count-to";
 import BlogandUserchar from "./BlogAndUserLine.vue";
+import axios from "axios";
 export default {
-  components: { countTo, BlogandUserchar }
+  data() {
+    return {
+      usercount: 0,
+      postcount: 0
+    };
+  },
+  components: { countTo, BlogandUserchar },
+  methods: {
+    getusercount() {
+      return axios.get("/userTable");
+    },
+    getpostcount() {
+      return axios.get("/postTable");
+    }
+  },
+  mounted() {
+    axios.all([this.getusercount(), this.getpostcount()]).then(
+      axios.spread((userres, postres) => {
+        window.console.log("usercount");
+        window.console.log(userres);
+
+        let usercount = userres.data.data.records;
+        let postcount = postres.data.data.records;
+        this.usercount = usercount.length + 1;
+        this.postcount = postcount.length + 1;
+        window.console.log(usercount);
+        window.console.log(postcount);
+      })
+    );
+  },
+
+  
 };
 </script>
 

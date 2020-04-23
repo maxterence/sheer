@@ -1,7 +1,7 @@
 <template>
   <el-container style="height: auto;">
     <el-aside width="200px" style="">
-     <img src="@/assets/images/logo.png" alt="MANAGE SYS" class="headerlogo" />
+     <img src="@/assets/images/logo2s.png" alt="MANAGE SYS" class="headerlogo" />
       <el-menu :default-openeds="['1', '3']" router>
         <el-menu-item-group title=" ">
           
@@ -12,7 +12,7 @@
           <el-menu-item index="/managesys/usermanage">用户管理</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group title=" ">   
-          <el-menu-item @click="exit" >退出</el-menu-item>
+          <el-menu-item @click="exit" index="/" >退出</el-menu-item>
         </el-menu-item-group>
       </el-menu>
     </el-aside>
@@ -39,7 +39,7 @@ export default {
     exit(){
       localStorage.removeItem("adminId");
       localStorage.removeItem("adminName");
-      this.$route.push({path:'/'})
+    
     }
   },
 };

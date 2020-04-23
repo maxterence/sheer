@@ -42,20 +42,25 @@
           circle
           icon="el-icon-delete"
           class="card_btn"
-          style="float:right"
-          v-if="$store.state.icenterdeleteshow"
+          style="float:right;margin-right:15px"
+          v-if="delshow"
+          @click="delpost"
         ></el-button>
       </div>
       <!-- 评论列表 -->
-      <div v-show="card.comment_list!=null" class="cmtBlog">
-        <ul>
-          <li v-for="uclist in card.comment_list " :key="uclist.userName">
-            <span style="font-weight:bold">{{uclist.userName}}</span> :
-            <span>{{uclist.commentText}}</span>
-          </li>
-        </ul>
+      <div class="cmtBlog">
+        <div v-if="!commentempty ">
+          <ul>
+            <li v-for="uclist in comment_list " :key="uclist.userName" class="cmtlstli">
+              <span style="font-weight:bold">{{uclist.userName}}</span> :
+              <span>{{uclist.commentText}}</span>
+            </li>
+          </ul>
+        </div>
+        <div v-else>
+          <p style="color: rgb(118, 118, 118);margin-left:15px;">还没有评论哦</p>
+        </div>
       </div>
-    
     </el-card>
   </div>
 </template>
@@ -71,41 +76,94 @@ export default {
       userAvatar: "",
       postContent: "",
       postImgsrc: "",
-      postShopurl: "",
-      comment_list: []
+      postShopurl: ""
     }
   },
   data() {
     return {
-      mycomment: ""
+      comment_list: [],
+      mycomment: "",
+      commentempty: true,
+      delshow: false,
+      uid: ""
     };
   },
 
-  mounted(){
-    window.console.log("mounted:"+this.card.postId);
+  mounted() {
+    window.console.log("mounted:" + this.card.postId);
+    var uid = localStorage.getItem("userinfoid");
+    this.uid = uid;
+    if (this.card.userId === uid) {
+      this.delshow = true;
+    } else {
+      this.delshow = false;
+    }
   },
-  beforeCreate(){
-    window.console.log("bced:"+this.card.postId);
 
-  },
-  created(){
-    window.console.log("created:"+this.card.postId);
-    let pid = this.card.postId;
-    this.$axios.get("/commentTable/getbypost",{
-      params:{
-        postId:pid
-      }
-    }).then(res=>{
-      if(res.data.code==0){
-        
-        this.card.comment_list=res.data.data.records;
-      }else{
-       window.console.log(pid+"has no comment"); 
-      }
-    })
+  created() {
+    window.console.log("created:" + this.card.postId);
+    this.getcomment();
   },
 
   methods: {
+    delpost() {
+      let delPid = this.card.postId;
+      
+      this.$confirm('确认删除?',"提示",{
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+      }).then(()=>{
+       
+      this.$axios
+        .delete("/postTable", {
+          params: {
+            idList: delPid
+          }
+        })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.$message("删除成功");
+          } else {
+            this.$message("删除失败");
+          }
+        })
+        .catch(err => {
+          window.console.log(err);
+        });
+      }).catch(()=>{
+        this.$message("取消删除");
+      })
+     
+    },
+    getcomment() {
+      let pid = this.card.postId;
+      // 获取评论
+      this.$axios
+        .get("/commentTable/getbypost", {
+          params: {
+            postId: pid
+          }
+        })
+        .then(res => {
+          if (res.data.code == 0) {
+            var data = res.data.data.records;
+            if (data.length == 0) {
+              this.commentempty = true;
+            } else {
+              this.commentempty = false;
+              for (var i = 0; i < data.length; i++) {
+                this.comment_list.push(data[i]);
+                this.$set(this.comment_list, i, data[i]);
+                window.console.log(i);
+                window.console.log(this.comment_list[i]);
+              }
+            }
+          } else {
+            window.console.log(pid + "错误");
+          }
+        });
+    },
     like() {
       let that = this;
       window.console.log(that.card.postId);
@@ -192,6 +250,7 @@ export default {
             if (res.data.code == 0) {
               that.$message("评论成功");
               that.mycomment = "";
+              this.getcomment();
             }
           });
       }
@@ -201,6 +260,9 @@ export default {
 </script>
 
 <style scoped>
+/* .cmtlstli{
+  border-bottom: 1px solid rgb(218, 218, 218);
+} */
 .cardcontainer {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
@@ -231,8 +293,9 @@ export default {
   margin: 30px 0 15px 15px;
 }
 .cmtBlog {
-  border-top: 1px solid rgb(211, 211, 211);
-  padding: 10px 15px;
+  border-top: 1px solid rgb(223, 223, 223);
+  padding: 5px 15px 10px;
+  font-size: 14px;
 }
 ul {
   list-style: none;

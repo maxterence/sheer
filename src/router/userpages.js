@@ -2,6 +2,7 @@ import Home from '../views/Home.vue'
 import setting from '../views/setting.vue'
 import main from '../views/Main.vue'
 import icenter from'../views/icenter.vue'
+// import store from 'vuex'
 
 
 let routes=[
@@ -61,10 +62,16 @@ let routes=[
                 beforeEnter: (to, from, next) => {
                   var a =localStorage.getItem("userinfoname"); 
                   if(a){
-                      next();
+                 
+                    next();
+                    
                   }else{
-                      next({path:'/login'});
+                    next({path:'/login'});
                   }
+                },
+                beforeRouteLeave (to, from, next) {
+                 
+                  next();
                 },
                 meta:{
                   title:"个人中心"

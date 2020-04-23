@@ -112,22 +112,25 @@ export default {
       userImgsrc: ""
     };
   },
-  mounted() {},
-  
-  created: function() {
-    var username = localStorage.getItem("userinfoname");
-    var useravatar = localStorage.getItem("userinfoavatar");
-    if (username != null) {
-      this.$store.commit("userlogin", username);
-    }
-    if (useravatar != null) {
-      // this.$store.commit("userhead",useravatar)
-      this.userImgsrc = useravatar;
-    } else {
-      this.userImgsrc = require("@/assets/images/head.png");
-    }
+  mounted() {
+    this.getuser();
   },
+
+  created: function() {},
   methods: {
+    getuser() {
+      var username = localStorage.getItem("userinfoname");
+      var useravatar = localStorage.getItem("userinfoavatar");
+      if (username != null) {
+        this.$store.commit("userlogin", username);
+      }
+      if (useravatar != null) {
+        // this.$store.commit("userhead",useravatar)
+        this.userImgsrc = useravatar;
+      } else {
+        this.userImgsrc = require("@/assets/images/head.png");
+      }
+    },
     handleexit() {
       //退出登录并清除登录信息
       if (
@@ -152,9 +155,10 @@ export default {
           // this.$router.push('/home');
         }, 1000);
       }
+      this.getuser();
     },
     sendpost() {
-      let that=this;
+      let that = this;
       //发送帖子的方法
       var postdata = {
         userId: localStorage.getItem("userinfoid"),
@@ -166,7 +170,7 @@ export default {
         postImgsrc: this.userupdate.postImgsrc
       };
 
- if (
+      if (
         that.$store.state.userinfo == null ||
         localStorage.getItem("userinfoid") == null
       ) {
@@ -178,8 +182,7 @@ export default {
         that.$alert("您的账号已被封停，部分功能将受限制！", "警告！！", {
           comfirmButtomText: "确定"
         });
-      }  
-
+      }
 
       this.$axios
         .post("/postTable", postdata, {
@@ -209,13 +212,14 @@ export default {
     beforeAvatarUpload(file) {
       const isLt2M = file.size / 1024 / 1024 < 9;
       const filetype = file.type;
- 
-      var isPic = ((filetype == "image/jpeg" && filetype == "image/png")?true:false);
+
+      var isPic =
+        filetype == "image/jpeg" && filetype == "image/png" ? true : false;
 
       if (!isLt2M) {
         this.$message.error("上传头像图片大小不能超过 9MB!");
       }
-      return isLt2M||isPic ;
+      return isLt2M || isPic;
     },
 
     handleClose() {},
