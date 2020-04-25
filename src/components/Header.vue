@@ -3,8 +3,6 @@
     <img src="../assets/images/logo2s.png" alt="SHEER" class="headerlogo" />
 
     <div class="topmenu">
-      <!-- 搜索 -->
-
       <!-- 发布 -->
       <el-button
         type="primary"
@@ -21,12 +19,13 @@
         width="45%"
         :modal-append-to-body="false"
       >
-        <el-input placeholder="请输入标题" v-model="userupdate.postTitle"></el-input>
+        <el-input placeholder="请输入标题" required v-model="userupdate.postTitle"></el-input>
         <el-input
           type="textarea"
           :autosize="{ minRows: 4, maxRows: 6}"
           placeholder="请输入内容"
           v-model="userupdate.postContent"
+          required
         ></el-input>
         <p></p>
         <el-input placeholder="好物链接" v-model="userupdate.postShopurl"></el-input>
@@ -127,9 +126,10 @@ export default {
       if (useravatar != null) {
         // this.$store.commit("userhead",useravatar)
         this.userImgsrc = useravatar;
-      } else {
-        this.userImgsrc = require("@/assets/images/head.png");
       }
+      // else {
+      //   this.userImgsrc = require("@/assets/images/head.png");
+      // }
     },
     handleexit() {
       //退出登录并清除登录信息
@@ -179,25 +179,25 @@ export default {
           confirmButtonText: "确定"
         });
       } else if (localStorage.getItem("userinfostatus") == 0) {
-        that.$alert("您的账号已被封停，部分功能将受限制！", "警告！！", {
+        that.$alert("您的账号已被封停，发布帖子受限制！", "警告！！", {
           comfirmButtomText: "确定"
         });
+      } else {
+        this.$axios
+          .post("/postTable", postdata, {
+            header: {
+              " emulateJSON": "true",
+              "Content-Type": "application/json"
+            }
+          })
+          .then(res => {
+            if (res.data.code == 0) {
+              this.$message({ message: "发布成功！", type: "success" });
+            } else {
+              this.$message.error("发布失败");
+            }
+          });
       }
-
-      this.$axios
-        .post("/postTable", postdata, {
-          header: {
-            " emulateJSON": "true",
-            "Content-Type": "application/json"
-          }
-        })
-        .then(res => {
-          if (res.data.code == 0) {
-            this.$message({ message: "发布成功！", type: "success" });
-          } else {
-            this.$message.error("发布失败");
-          }
-        });
 
       this.writedialogform = false;
     },

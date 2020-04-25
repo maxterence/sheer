@@ -27,7 +27,7 @@
         </div>
       </el-col>
       <el-col :span="14">
-        <div class="container">
+        <div class="container" v-if="cardlist.length>0">
           <ActCard :card="card" v-for="(card, index) in cardlist" :key="index"></ActCard>
         </div>
       </el-col>
@@ -40,43 +40,8 @@ import ActCard from "@/components/ActCard";
 export default {
   data() {
     return {
-      user: {
-        user_id: "20021010",
-        user_avatar: require("../assets/images/reyi.jpg"),
-        user_username: "Reyi",
-        user_sex: "女",
-        user_phone: "123123",
-        user_status: "正常",
-        user_Matto: "冲鸭冲鸭！！！！！！！！"
-      },
       User: {},
-      cardlist: [
-        {
-          postId: "3",
-          postAuthor: "菜谱大师",
-          userAvatar: require("../assets/images/head/head2_1.png"),
-          postContent:
-            "【超级香酥的蜂蜜脆吐司】吐司的神仙吃法了解一下？超级香酥的蜂蜜脆吐司，当早餐甜点都合适，,香酥好吃,做早餐简直太好吃了,烘焙小白们一定要试试~[哈哈]1、准备好食材,吐司去掉四边,切成三角形。黄油隔热水融化。融化的黄油中加入一勺蜂蜜。勾吐司两面都刷上黄油蜂蜜,再撒一些粗粒砂糖。2、烤箱提前预热,上下火180度烤20分钟即可。",
-          postImgsrc:
-            "https://ww2.sinaimg.cn/orj360/62391dc8ly1gdogjxodn7j20u013qdlh.jpg",
-          comment_list: [
-            { cmtusername: "吃货吃吃吃", cmt: "好香！周末试试！！" },
-            { cmtusername: "user1231231", cmt: "啊，好懒，我还是去买吧" }
-          ]
-        },
-        {
-          postId: "2",
-          postAuthor: "刘人语reyi",
-          userAvatar: require("../assets/images/user.jpg"),
-          postContent: "我的新剧小美满上线啦！就在腾讯视频，快来看甜甜的恋爱吧",
-          postImgsrc:
-            "https://wx3.sinaimg.cn/large/007jQkvLgy1gdovhzy1vdj356o3ggqvg.jpg",
-          comment_list: [
-            { cmtusername: "追剧狂魔", cmt: "周四晚八点准时收看！！！" },
-            { cmtusername: "yeahzzzz", cmt: "你好可爱啊！！！" }
-          ]
-        }
-      ]
+      cardlist: [ ],
     };
   },
   components: {
@@ -116,14 +81,14 @@ export default {
           userId: uid
         }
       }).then(res=>{
-        this.cardlist=res.data.data.records;
-        window.console.log("获取"+uid+"帖子成功");
+        if(res.data.code==0){
+          this.cardlist=res.data.data.records;
+        }    
       }).catch(err=>{
           this.$message.error("获取帖子失败")
         window.console.log(err);
       });
     },
-
   },
 
   mounted() {

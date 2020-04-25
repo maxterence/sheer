@@ -35,7 +35,7 @@ export default {
     };
   },
   methods: {
-    toregister() {
+    toregister() {//跳转到注册页面
       this.$router.push({ path: "/register" }).catch(err => {
         alert(err);
       });

@@ -22,7 +22,7 @@
             </div>
             <div>
               <div class="card-panel-desc">
-                <div class="title">博客总数</div>
+                <div class="title">帖子总数</div>
                 <countTo :startVal="0" :endVal="postcount" :duration="2000"></countTo>
               </div>
             </div>
@@ -35,7 +35,7 @@
             </div>
             <div>
               <div class="card-panel-desc">
-                <div class="title">最新博客</div>
+                <div class="title">最新帖子</div>
                 <countTo :startVal="0" :endVal="postcount" :duration="2000"></countTo>
               </div>
             </div>
@@ -48,7 +48,7 @@
             </div>
             <div>
               <div class="card-panel-desc">
-                <div class="title">阅读总数</div>
+                <div class="title">访问数</div>
                 <countTo :startVal="0" :endVal="6666" :duration="3000"></countTo>
               </div>
             </div>
@@ -124,6 +124,7 @@ export default {
   float: left;
   border-radius: 6px;
   transition: all 0.5s ease-out;
+  font-size: 42px;
 }
 .grid-content:hover .card-panel-iconf-div {
   background: #40c9c6;

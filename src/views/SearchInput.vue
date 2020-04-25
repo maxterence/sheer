@@ -31,8 +31,7 @@ export default {
   },
   methods: {
     handlesearch() {
-      //处理搜索的方法
-
+      //处理搜索的方法带关键字跳转
       let searchkeywords = this.searchkeywords;
       if(searchkeywords==null||searchkeywords==""){
           this.$alert("请输入搜索词！！",{
@@ -47,8 +46,7 @@ export default {
 </script>
 
 <style>
-.searchtext {
-}
+
 .searchinput {
   display: inline-block;
   margin-top: 20px;

@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div >
     <el-row style="height:80%">
       <el-col :span="6" :offset="9">
-        <div class="loginform">
+        <div class="loginform" v-loading="lo">
           <h1 style="margin-bottom:30px">后台管理系统</h1>
           <el-form>
             <el-form-item>
@@ -26,60 +26,63 @@ formdata;
 export default {
   data() {
     return {
+      lo: false,
       username: "",
       userpass: ""
     };
-  },
-  mounted() {
-    window.console.log("sfasdfa");
   },
   methods: {
     handlelogin() {
       let that = this;
       let uname = that.username;
-        let uspass = that.userpass;
-      window.console.log("startlogin");
-      // let data = {
-      //   username: this.username,
-      //   userpass: this.userpass
-      // };
+      let uspass = that.userpass;
+      
       if (that.username == "" || that.userpass == "") {
         that.$alert("请输入用户名/密码！", "请输入用户名/密码", {
           confirmButtonText: "确定"
         });
       } else {
+        this.lo = true;
         that.$axios
           .get(
             "/adminTable",
             {
-              params:{adminId: uname}
+              params: { adminId: uname }
             },
             {
-             " emulateJSON": "true",
+              " emulateJSON": "true",
               "Content-Type": "application/json"
             }
           )
           .then(res => {
             let pass = res.data.data.records[0].adminPassword;
-            if (uspass == pass) {
+            if(pass == null){
+            this.$message.error("账号密码错误")
+                
+            }else{
+              if (uspass == pass) {
               that.$message("登录成功");
               that.$store.commit("mnglogin", that.username);
-              localStorage.setItem("adminId",res.data.data.records[0].adminId);
-              localStorage.setItem("adminName",res.data.data.records[0].adminName);
+              localStorage.setItem("adminId", res.data.data.records[0].adminId);
+              localStorage.setItem(
+                "adminName",
+                res.data.data.records[0].adminName
+              );
               setTimeout(() => {
                 that.$router.push({ path: "/managesys/showdetail" });
               }, 1000);
             } else {
-              that.$alert("请重新登录","错误",{
+              that.$alert("请重新登录", "错误", {
                 confirmButtonText: "确定"
-              })
-            }
+              });
+            }}
           })
           .catch(res => {
-            window.console.log(res);
+            window.console.log(res)
+            this.$message.error("错误")
           });
-        
       }
+      this.lo = false;
     }
   }
 };

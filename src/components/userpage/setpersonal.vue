@@ -10,10 +10,9 @@
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
         >
-          <img v-if="imageUrl" :src="imageUrl" class="avatar1" />
+          <el-avatar v-if="imageUrl" :src="imageUrl" :size="72" ></el-avatar>
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
-
         <div
           style="font-size:15px;color:#606266; width:140px;margin:10px 0 0 85px;padding:0;"
         >点击修改头像</div>
@@ -27,7 +26,6 @@
             <el-radio v-model="form.userSex" label="男">男</el-radio>
             <el-radio v-model="form.userSex" label="女">女</el-radio>
           </el-form-item>
-
           <el-form-item label="电话">
             <el-input v-model="form.userPhone" style="width: 60%;"></el-input>
           </el-form-item>
@@ -94,7 +92,6 @@ export default {
     },
     beforeAvatarUpload(file) {
       const isLt2M = file.size / 1024 / 1024 < 9;
-
       if (!isLt2M) {
         this.$message.error("上传图片大小不能超过 9MB!");
       }

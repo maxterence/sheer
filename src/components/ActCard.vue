@@ -3,8 +3,7 @@
   <div style="float:left;margin:5px 15px;height:auto">
     <el-card class="box-card" :body-style="{ padding: '0' , }">
       <div slot="header" class="clearfix">
-        <p
-          style="margin:10px 20px;font-size:25px;height:50px;float:right;color:orangered;"
+        <p style="margin:10px 20px;font-size:25px;height:50px;float:right;color:orangered;"
         >{{card.postAuthor}}</p>
         <el-avatar :src="card.userAvatar" :size="60" fit="fill"></el-avatar>
       </div>
@@ -17,10 +16,9 @@
       <div class="btnlist">
         <!-- 喜欢按钮 -->
         <el-button circle icon="el-icon-star-off" class="card_btn" @click="like"></el-button>
-
         <el-divider direction="vertical"></el-divider>
         <!-- 评论按钮组 -->
-        <el-popover placement="buttom" width="420" trigger="click">
+        <el-popover placement="top-start" width="420" trigger="click">
           <div>
             <el-input placeholder="评论一下吧" v-model="mycomment" style="width:350px"></el-input>
             <el-button type="primary" @click="comment">评论</el-button>
@@ -90,7 +88,7 @@ export default {
   },
 
   mounted() {
-    window.console.log("mounted:" + this.card.postId);
+    
     var uid = localStorage.getItem("userinfoid");
     this.uid = uid;
     if (this.card.userId === uid) {
@@ -108,33 +106,33 @@ export default {
   methods: {
     delpost() {
       let delPid = this.card.postId;
-      
-      this.$confirm('确认删除?',"提示",{
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-      }).then(()=>{
-       
-      this.$axios
-        .delete("/postTable", {
-          params: {
-            idList: delPid
-          }
-        })
-        .then(res => {
-          if (res.data.code == 0) {
-            this.$message("删除成功");
-          } else {
-            this.$message("删除失败");
-          }
-        })
-        .catch(err => {
-          window.console.log(err);
-        });
-      }).catch(()=>{
-        this.$message("取消删除");
+
+      this.$confirm("确认删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
-     
+        .then(() => {
+          this.$axios
+            .delete("/postTable", {
+              params: {
+                idList: delPid
+              }
+            })
+            .then(res => {
+              if (res.data.code == 0) {
+                this.$message("删除成功");
+              } else {
+                this.$message("删除失败");
+              }
+            })
+            .catch(err => {
+              window.console.log(err);
+            });
+        })
+        .catch(() => {
+          this.$message("取消删除");
+        });
     },
     getcomment() {
       let pid = this.card.postId;
@@ -179,7 +177,7 @@ export default {
           confirmButtonText: "确定"
         });
       } else if (localStorage.getItem("userinfostatus") == 0) {
-        that.$alert("您的账号已被封停，部分功能将受限制！", "警告！！", {
+        that.$alert("您的账号已被封停！", "警告！！", {
           confirmButtomText: "确定"
         });
       } else {
@@ -232,7 +230,7 @@ export default {
           confirmButtonText: "确定"
         });
       } else if (localStorage.getItem("userinfostatus") == 0) {
-        that.$alert("您的账号已被封停，部分功能将受限制！", "警告！！", {
+        that.$alert("您的账号已被封停，无法评论！", "警告！！", {
           comfirmButtomText: "确定"
         });
       } else {

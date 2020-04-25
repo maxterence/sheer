@@ -3,7 +3,7 @@ import managesys from '../views/mngsys/managesys.vue';
 import showdata from '../components/mngsys/showdata.vue';
 import postmanage from '../components/mngsys/postmanage.vue';
 import usermanage from '../components/mngsys/usermanage.vue';
-import store from '../store';
+
 
 let routes=[
     {
@@ -18,9 +18,11 @@ let routes=[
         path:'/managesys',
         component:managesys,
         beforeEnter: (to, from, next) => {
-            if(store.state.mnguserinfo !=''){
+            var a =localStorage.getItem("adminId"); 
+            if(a != null){
                 next();
             }else{
+                alert("请登录！");
                 next({path:'/managelogin'});
             }
         },

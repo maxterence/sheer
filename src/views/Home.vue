@@ -1,16 +1,37 @@
 <template>
   <el-main>
     <el-row>
-      <el-col :span="24">
-        <el-carousel :interval="3000" type="card" height="220px">
+      <el-col span="4">
+        <el-menu
+          :default-active="activeIndex2"
+          class="el-menu-demo"
+          @select="handleSelect"
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+        >
+          <el-menu-item index="1">活动1</el-menu-item>
+          <el-menu-item index="2">活动2</el-menu-item>
+          <el-menu-item index="3">活动3</el-menu-item>
+          <el-menu-item index="4">活动4</el-menu-item>
+          <el-menu-item index="5">活动5</el-menu-item>
+          <el-menu-item index="6">活动6</el-menu-item>
+        </el-menu>
+      </el-col>
+      <el-col :span="17" :offset="0">
+        <el-carousel :interval="3000" height="350px">
           <el-carousel-item v-for="(item,index) in carouselimg" :key="index">
             <el-image :src="item" :fit="cover"></el-image>
           </el-carousel-item>
         </el-carousel>
       </el-col>
+      <el-col :span="3">
+        <div class="adv">
+          <span>广告位招租</span>
+        </div>
+      </el-col>
     </el-row>
     <el-row>
-
       <el-col :span="19" :offset="2">
         <div class="main">
           <div class="showstream">
@@ -18,13 +39,8 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="3" :offset="0">
-        <div class="adv">
-          <span>广告位招租</span>
-        </div>
-      </el-col>
+
     </el-row>
-   
   </el-main>
 </template>
 
@@ -40,8 +56,7 @@ export default {
   },
   data() {
     return {
-      cardlist: [
-      ],
+      cardlist: [],
       carouselimg: [
         "https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/4e3a7cc7167b1667f5953e701fddc44e.jpg?w=2452&h=920",
         "https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/347836812589c95e1018973ed3aa3caa.jpg?thumb=1&w=1226&h=460&f=webp&q=90",
@@ -50,26 +65,22 @@ export default {
       ]
     };
   },
-  mounted() {
-    },
-  created(){
-   this.getdata();
-
+  mounted() {},
+  created() {
+    this.getdata();
   },
-methods:{
-  getdata(){
- this.$axios
-      .get("/postTable", {
-        emulateJSON: "true",
-        "Content-Type": "application/json"
-      })
-      .then(res => {
-        
-        this.cardlist = res.data.data.records;
-      });
+  methods: {
+    getdata() {
+      this.$axios
+        .get("/postTable", {
+          emulateJSON: "true",
+          "Content-Type": "application/json"
+        })
+        .then(res => {
+          this.cardlist = res.data.data.records;
+        });
+    }
   }
-}
-
 };
 </script>
 
@@ -102,10 +113,11 @@ methods:{
 }
 .adv {
   width: 100%;
-  height: 500px;
-  background-color: rgba(255, 0, 0, 0.897);
+  height: 350px;
+  background-color: rgb(255, 170, 90);
   text-align: center;
   font-size: 40px;
-  color: #1596ec;
+  padding:0 2px;
+  color: #cc4f07;
 }
 </style>

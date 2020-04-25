@@ -84,11 +84,7 @@ let routes=[
                    var a =localStorage.getItem("userinfoname"); 
                    if(a){
                      next();
-                    }else{
-                      // this.$alert("登录后才能查看哦", "请登录", {
-                      //   confirmButtonText: "确定"
-                      // });
-                      alert("请登录")
+                    }else{                     
                        next({path:'/login'});
                    }
                  },

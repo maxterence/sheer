@@ -1,15 +1,5 @@
 <template>
   <div style="height:100%;width:100%" v-loading="loading">
-    <div style="height:40px;width:100%;margin:10px 0">
-      <el-input
-        placeholder="搜索帖子"
-        prefix-icon="el-icon-search"
-        v-model="searchkey"
-        clearable
-        style="width:200px;"
-      ></el-input>
-      <el-button icon="el-icon-search" @click="handlesearch" circle style="margin-right:10vw;"></el-button>
-    </div>
     <el-table :data="posttable">
       <el-table-column type="expand" style="width:100%" :show-overflow-tooltip="true">
         <template slot-scope="props">
@@ -60,7 +50,7 @@ export default {
     return {
       loading: false,
       posttable: [],
-      searchkey: "",
+
       page: {
         size: 6,
         total: 100,
@@ -88,7 +78,6 @@ export default {
         .catch(err => {
           window.console.log(err);
         });
-
     },
     handlesearch() {
       window.console.log(this.searchkey);
@@ -107,7 +96,7 @@ export default {
       this.loading = false;
     },
     changeCurrent(current) {
-         this.page.current = current;
+      this.page.current = current;
       this.getdata();
     }
   },

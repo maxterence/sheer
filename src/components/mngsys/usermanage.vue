@@ -49,11 +49,14 @@ export default {
   },
   methods: {
     active(userid, userstatus) {
+      let msgg="";
       let cstatus = 0;
       // window.console.log(userid+"-"+userstatus);
       if (userstatus == 1) {
         cstatus = 0;
+        msgg="封停"
       } else {
+        msgg="解封"
         cstatus = 1;
       }
       let that = this;
@@ -68,7 +71,7 @@ export default {
         })
         .then(res => {
           let msg = res.data.msg;
-          that.$message("设置" + msg);
+          that.$message(msgg + msg);
         });
     },
     getData() {
