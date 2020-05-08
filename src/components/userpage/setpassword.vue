@@ -72,7 +72,7 @@ export default {
         userPassword:that.passset.checkPass
       }
       window.console.log(cuserpass);
-      that.$axios.put("/userTable",cuserpass,{
+      that.$axios.put("/api/userTable",cuserpass,{
         "emulateJSON":"true",
         "Content-Type":"application/json"
       }).then(res=>{

@@ -147,7 +147,7 @@ export default {
       };
 
       that.$axios
-        .post("userTable", newuserdata, {
+        .post("/api/userTable", newuserdata, {
           header: {
             emulateJSON: "true",
             "Content-Type": "application/json"

@@ -74,10 +74,10 @@ export default {
   components: { countTo, BlogandUserchar },
   methods: {
     getusercount() {
-      return axios.get("/userTable");
+      return axios.get("/api/userTable");
     },
     getpostcount() {
-      return axios.get("/postTable");
+      return axios.get("/api/postTable");
     }
   },
   mounted() {

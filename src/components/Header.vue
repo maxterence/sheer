@@ -184,7 +184,7 @@ export default {
         });
       } else {
         this.$axios
-          .post("/postTable", postdata, {
+          .post("/api/postTable", postdata, {
             header: {
               " emulateJSON": "true",
               "Content-Type": "application/json"

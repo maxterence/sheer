@@ -41,7 +41,7 @@ export default {
   this.kewords=key;
     //发送搜索请求。
     that.$axios
-      .get("/postTable/search", 
+      .get("/api/postTable/search", 
       {params:{keyword:key}}, {
         header: {
           " emulateJSON": "true",

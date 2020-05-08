@@ -57,7 +57,7 @@ export default {
     getuser() {
       this.User = null;
       var uid = localStorage.getItem("userinfoid");
-      return this.$axios.get("userTable", {
+      return this.$axios.get("/api/userTable", {
         params: {
           userId: uid
         }
@@ -76,7 +76,7 @@ export default {
     },
     getuserpost() {
       var uid = localStorage.getItem("userinfoid");
-      return this.$axios.get("postTable/getbyuserid", {
+      return this.$axios.get("/api/postTable/getbyuserid", {
         params: {
           userId: uid
         }

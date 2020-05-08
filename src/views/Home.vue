@@ -46,7 +46,6 @@
 
 <script>
 // @ is an alias to /src
-
 import ActCard from "@/components/ActCard";
 
 export default {
@@ -72,7 +71,7 @@ export default {
   methods: {
     getdata() {
       this.$axios
-        .get("/postTable", {
+        .get("/api/postTable", {
           emulateJSON: "true",
           "Content-Type": "application/json"
         })

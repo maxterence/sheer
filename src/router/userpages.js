@@ -15,7 +15,7 @@ let routes=[
         },
         children:[
             {
-                path: '/',
+                path: '',
                 name: 'home',
                 component: Home
               },
@@ -96,6 +96,14 @@ let routes=[
               {
                 path:'/setting',
                 component:setting,
+                beforeEnter: (to, from, next) => {
+                  var a =localStorage.getItem("userinfoname"); 
+                  if(a){
+                    next();
+                   }else{                     
+                      next({path:'/login'});
+                  }
+                },
                 children:[
                   {
                     path:'',    //默认

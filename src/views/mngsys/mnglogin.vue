@@ -45,7 +45,7 @@ export default {
         this.lo = true;
         that.$axios
           .get(
-            "/adminTable",
+            "/api/adminTable",
             {
               params: { adminId: uname }
             },

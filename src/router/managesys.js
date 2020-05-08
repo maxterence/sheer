@@ -22,7 +22,7 @@ let routes=[
             if(a != null){
                 next();
             }else{
-                alert("请登录！");
+               
                 next({path:'/managelogin'});
             }
         },

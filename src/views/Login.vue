@@ -53,7 +53,7 @@ export default {
         //ajax登录请求
         this.$axios
           .get(
-            "/userTable",
+            "/api/userTable",
             {
               params: {
                 userId: loginid

@@ -65,7 +65,7 @@ export default {
         userStatus: cstatus
       };
       that.$axios
-        .put("/userTable", upduser, {
+        .put("/api/userTable", upduser, {
           emulateJSON: "true",
           "Content-Type": "application/json"
         })
@@ -77,7 +77,7 @@ export default {
     getData() {
       let that = this;
       let url =
-        "/userTable?current=" + that.page.current + "&size=" + that.page.size;
+        "/api/userTable?current=" + that.page.current + "&size=" + that.page.size;
       that.$axios.get(url).then(res => {
         if (res.data.code == 0) {
           that.userlist = res.data.data.records;

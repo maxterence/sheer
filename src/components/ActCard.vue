@@ -27,10 +27,10 @@
         </el-popover>
         <el-divider direction="vertical"></el-divider>
         <!-- 购物连接按钮 -->
-        <el-popover placement="top" width="420" trigger="hover">
+        <el-popover placement="buttom-end" width="420" trigger="hover">
           <div>
             直达链接：
-            <el-link :href="card.postShopurl">{{card.postShopurl}}</el-link>
+            <el-link :href="card.postShopurl" target="_blank">{{card.postShopurl}}</el-link>
           </div>
           <el-button circle icon="el-icon-shopping-cart-full" slot="reference" class="card_btn"></el-button>
         </el-popover>
@@ -114,7 +114,7 @@ export default {
       })
         .then(() => {
           this.$axios
-            .delete("/postTable", {
+            .delete("/api/postTable", {
               params: {
                 idList: delPid
               }
@@ -135,10 +135,11 @@ export default {
         });
     },
     getcomment() {
+      this.comment_list=[];
       let pid = this.card.postId;
       // 获取评论
       this.$axios
-        .get("/commentTable/getbypost", {
+        .get("/api/commentTable/getbypost", {
           params: {
             postId: pid
           }
@@ -153,8 +154,7 @@ export default {
               for (var i = 0; i < data.length; i++) {
                 this.comment_list.push(data[i]);
                 this.$set(this.comment_list, i, data[i]);
-                window.console.log(i);
-                window.console.log(this.comment_list[i]);
+             
               }
             }
           } else {
@@ -184,7 +184,7 @@ export default {
         //已登录，发送点赞信息
         that.$axios
           .post(
-            "/likeTable",
+            "/api/likeTable",
             {
               userId: userid,
               postId: cardid
@@ -238,7 +238,7 @@ export default {
         //发送评论
 
         that.$axios
-          .post("/commentTable", commentdata, {
+          .post("/api/commentTable", commentdata, {
             header: {
               emulateJSON: "true",
               "Content-Type": "application/json"

@@ -68,7 +68,7 @@ export default {
         userAvatar: this.form.userAvatar
       };
       this.$axios
-        .put("/userTable", updateform, {
+        .put("/api/userTable", updateform, {
           header: {
             emulateJSON: "ture",
             "Content-Type": "application/json"
@@ -78,6 +78,7 @@ export default {
           window.console.log(res);
           if (res.data.code == 0) {
             this.$message("修改成功");
+            this.$router.push({path:'/'});
           } else {
             this.$message.error("修改失败");
           }

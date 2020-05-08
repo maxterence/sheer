@@ -62,7 +62,7 @@ export default {
     handleDelete(delPid) {
       window.console.log("del:" + delPid);
       this.$axios
-        .delete("/postTable", {
+        .delete("/api/postTable", {
           params: {
             idList: delPid
           }
@@ -86,7 +86,7 @@ export default {
       this.loading = true;
       let that = this;
       let url =
-        "/postTable?current=" + that.page.current + "&size=" + that.page.size;
+        "/api/postTable?current=" + that.page.current + "&size=" + that.page.size;
       that.$axios.get(url).then(res => {
         if (res.data.code == 0) {
           that.posttable = res.data.data.records;

@@ -32,7 +32,7 @@ export default {
     let uid = localStorage.getItem("userinfoid");
     this.$axios
       .get(
-        "/postTable/getbylike",
+        "/api/postTable/getbylike",
         {
           params: {
             userId: uid
